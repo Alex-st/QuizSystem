@@ -14,7 +14,7 @@
         <!--</properties>-->
     <!--</persistence-unit>-->
     
-    <persistence-unit name="HiberanteMySQL">
+    <persistence-unit name="HibernateMySQL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
 

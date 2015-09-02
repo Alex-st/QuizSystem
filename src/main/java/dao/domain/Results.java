@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
+ * Entity bean with JPA annotations
  * Created by alex on 8/13/15.
  */
 
@@ -17,7 +18,7 @@ public class Results {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private Users author;
+    private Users student;
 
     @ManyToOne
     @JoinColumn(name = "topicId")
@@ -53,12 +54,12 @@ public class Results {
         this.date = date;
     }
 
-    public Users getAuthor() {
-        return author;
+    public Users getStudent() {
+        return student;
     }
 
-    public void setAuthor(Users author) {
-        this.author = author;
+    public void setStudent(Users student) {
+        this.student = student;
     }
 
     public Topics getTopic() {

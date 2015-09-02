@@ -1,4 +1,4 @@
-package dao.service;
+package service;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -13,7 +13,7 @@ public class AppEMFactory {
     private EntityManagerFactory emf;
 
     private AppEMFactory() {
-        emf = Persistence.createEntityManagerFactory("HiberanteMySQL");
+        emf = Persistence.createEntityManagerFactory("HibernateMySQL");
     }
 
     public static EntityManagerFactory getAppEMFactory() {

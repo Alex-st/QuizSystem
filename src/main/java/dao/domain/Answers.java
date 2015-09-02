@@ -3,6 +3,7 @@ package dao.domain;
 import javax.persistence.*;
 
 /**
+ * Entity bean with JPA annotations
  * Created by alex on 8/13/15.
  */
 @Entity
@@ -11,6 +12,7 @@ public class Answers {
     @GeneratedValue
     private int answerId;
 
+    //id -> questionId
     @ManyToOne
     @JoinColumn(name = "id")
     private Questions question;
@@ -23,12 +25,12 @@ public class Answers {
     public Answers() {
     }
 
-    public int getId() {
+    public int getAnswerId() {
         return answerId;
     }
 
-    public void setId(int id) {
-        this.answerId = id;
+    public void setAnswerId(int answerId) {
+        this.answerId = answerId;
     }
 
     public Questions getQuestion() {

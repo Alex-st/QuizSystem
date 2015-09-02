@@ -1,9 +1,8 @@
 package dao.domain;
 
-import dao.service.AppEMFactory;
+import service.AppEMFactory;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,7 +16,7 @@ import static junit.framework.TestCase.assertNotNull;
 public class JPADomainEntitiesTest {
 
     @Test
- //   @Ignore
+    @Ignore
     public void testSomeMethod() {
 
         EntityManagerFactory emf = AppEMFactory.getAppEMFactory();
@@ -33,8 +32,8 @@ public class JPADomainEntitiesTest {
         temp.setName("AlexTest");
         temp.setEmail("alextest@i.ua");
         temp.setLogin("alextest");
-        temp.setPass("test");
-        temp.setRole(RoleEnum.TUTOR);
+//        temp.setPass("test");
+//        temp.setRole(RoleEnum.TUTOR);
 
         try {
             em.getTransaction().begin();

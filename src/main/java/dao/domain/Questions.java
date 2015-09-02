@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 /**
+ * Entity bean with JPA annotations
  * Created by alex on 8/13/15.
  */
 @Entity
@@ -30,19 +31,19 @@ public class Questions {
     @JoinColumn(name = "userId")
     private Users author;
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private Set<Answers> answers;
 
 
     public Questions() {
     }
 
-    public int getId() {
+    public int getQuestionId() {
         return questionId;
     }
 
-    public void setId(int id) {
-        this.questionId = id;
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
     }
 
     public Topics getTopic() {
