@@ -13,15 +13,17 @@
             <!--<property name="hibernate.format_sql" value="true" />-->
         <!--</properties>-->
     <!--</persistence-unit>-->
-    
+
+
+
     <persistence-unit name="HibernateMySQL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
 
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
-            <property name="hibernate.connection.password" value="st"/>
-            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/mavenprojectdb"/>
-            <property name="hibernate.connection.username" value="root"/>
+            <!--<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>-->
+            <!--<property name="hibernate.connection.password" value="st"/>-->
+            <!--<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/mavenprojectdb"/>-->
+            <!--<property name="hibernate.connection.username" value="root"/>-->
 
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
             <property name="hibernate.hbm2ddl.auto" value="update" />

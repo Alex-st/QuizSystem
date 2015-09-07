@@ -3,6 +3,7 @@ package dao.repository;
 import dao.domain.Questions;
 import dao.domain.Users;
 import dao.domain.UsersPrivateData;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * Created by alex on 9/2/15.
  */
+@Repository("usersPrivateDataRepository")
 public class UsersPrivateDataRepository implements UsersPrivateDataRepo {
 
     @PersistenceContext(name = "HibernateMySQL")

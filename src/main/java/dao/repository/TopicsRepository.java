@@ -2,6 +2,7 @@ package dao.repository;
 
 import dao.domain.LangEnum;
 import dao.domain.Topics;
+import org.springframework.stereotype.Repository;
 import service.AppEMFactory;
 
 import javax.persistence.EntityManager;
@@ -15,9 +16,7 @@ import java.util.List;
  * Created by alex on 8/17/15.
  */
 
-//done
-//todo remove getTransaction.begin after Spring initializing
-
+@Repository("topicsRepository")
 public class TopicsRepository implements TopicsRepo {
 
     @PersistenceContext(name = "HibernateMySQL")
@@ -48,10 +47,10 @@ public class TopicsRepository implements TopicsRepo {
     @Override
     @Transactional
     public int saveTopic(Topics topic) {
-        em.getTransaction().begin();
+    //    em.getTransaction().begin();
         em.persist(topic);
         em.flush();
-        em.getTransaction().commit();
+    //    em.getTransaction().commit();
         return topic.getTopicId();
     }
 
@@ -59,9 +58,9 @@ public class TopicsRepository implements TopicsRepo {
     @Transactional
     public void deleteTopic(Topics topic) {
 
-        em.getTransaction().begin();
+    //    em.getTransaction().begin();
         em.remove(topic);
-        em.getTransaction().commit();
+    //    em.getTransaction().commit();
     }
 
     @Override

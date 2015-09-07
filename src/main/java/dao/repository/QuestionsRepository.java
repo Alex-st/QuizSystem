@@ -1,6 +1,7 @@
 package dao.repository;
 
 import dao.domain.*;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import java.util.Set;
 /**
  * Created by alex on 8/17/15.
  */
+@Repository("questionsRepository")
 public class QuestionsRepository implements QuestionsRepo {
 
     @PersistenceContext(name = "HibernateMySQL")
@@ -44,6 +46,12 @@ public class QuestionsRepository implements QuestionsRepo {
         temp.setLanguage(question.getLanguage());
         temp.setText(question.getText());
         temp.setTopic(question.getTopic());
+    }
+
+    @Override
+    public Questions getQuestionById(int id) {
+        Questions temp = (Questions) em.find(Questions.class, id);
+        return temp;
     }
 
     @Override

@@ -21,6 +21,8 @@ public interface QuestionsRepo {
     @Transactional
     void deleteQuestion(Questions questions);
 
+    public Questions getQuestionById(int id);
+
     Set<Answers> getAllQuestionAnswers(Questions question);
 
     List<Questions> getAllQuestionsbyTopic(Topics topic);

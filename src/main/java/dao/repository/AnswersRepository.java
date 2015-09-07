@@ -3,6 +3,7 @@ package dao.repository;
 import dao.domain.Answers;
 import dao.domain.Questions;
 import dao.domain.Users;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,6 +12,7 @@ import javax.transaction.Transactional;
 /**
  * Created by alex on 8/17/15.
  */
+@Repository("answersRepository")
 public class AnswersRepository implements AnswersRepo {
 
     @PersistenceContext(name = "HibernateMySQL")

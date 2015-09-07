@@ -6,6 +6,7 @@ import service.AppEMFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by alex on 8/17/15.
  */
+// Test was actual before adding Spring to project
 public class TopicsRepositoryMethodsTest {
 
     private TopicsRepo topicsRepo;
@@ -29,7 +31,7 @@ public class TopicsRepositoryMethodsTest {
     }
 
     @Test
-    //@Ignore
+    @Ignore
     public void checkInsertAndDeleteToDB() {
 
         TopicsRepo topicsRepo = new TopicsRepository(em);
