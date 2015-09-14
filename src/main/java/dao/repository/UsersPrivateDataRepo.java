@@ -16,6 +16,8 @@ public interface UsersPrivateDataRepo {
     @Transactional
     void deleteCredentials(UsersPrivateData credentials);
 
+    UsersPrivateData getCredentialsByUser(Users user);
+
     List<Users> getAllStudents();
 
     List<Users> getAllTutors();

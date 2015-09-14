@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -72,6 +73,17 @@ public class QuestionsRepository implements QuestionsRepo {
                 em.createQuery("select q from Questions q where q.topic = :tc", Questions.class);
 
         return query.setParameter("tc", topic).getResultList();
+    }
+
+    @Override
+    public List<Answers> getAllCorrectAnswersOfQuestion(Questions question) {
+        List<Answers> correctAnswers = new ArrayList<>();
+        for (Answers i: question.getAnswers()) {
+            if (i.isCorrect()) {
+                correctAnswers.add(i);
+            }
+        }
+        return correctAnswers;
     }
 
     @Override

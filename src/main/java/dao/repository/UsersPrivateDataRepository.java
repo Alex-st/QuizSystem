@@ -36,6 +36,13 @@ public class UsersPrivateDataRepository implements UsersPrivateDataRepo {
     }
 
     @Override
+    public UsersPrivateData getCredentialsByUser(Users user) {
+        TypedQuery<UsersPrivateData> query = em.createQuery("select cr from UsersPrivateData cr where cr.user = :param", UsersPrivateData.class);
+        query.setParameter("param", user);
+        return query.getSingleResult();
+    }
+
+    @Override
     public List<Users> getAllStudents() {
         TypedQuery<Users> query =
                 em.createQuery("select u.user from UsersPrivateData u where u.role = RoleEnum.STUDENT", Users.class);

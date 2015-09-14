@@ -23,6 +23,8 @@ public interface QuestionsRepo {
 
     public Questions getQuestionById(int id);
 
+    public List<Answers> getAllCorrectAnswersOfQuestion(Questions question);
+
     Set<Answers> getAllQuestionAnswers(Questions question);
 
     List<Questions> getAllQuestionsbyTopic(Topics topic);
