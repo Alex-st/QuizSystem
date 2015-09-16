@@ -9,11 +9,11 @@
 <html>
 <head>
     <title><fmt:message key="title"/></title>
-</head>>
+</head>
 <body>
 <h2><fmt:message key="title"/></h2>
 
-<form method="post" action="authorization.jsp">
+<form name="loginForm" method="post" action="login">
 
     <select name="locale">
         <option value="en" name="opt">English</option>
@@ -22,17 +22,21 @@
 
     <p>
             <label for="blogin"><fmt:message key="loginButton"/></label>
-            <input id="blogin" type='text' name='login' /><br>
+            <input id="blogin" type='text' name='username' /><br>
     </p>
     <p>
             <label for="password"><fmt:message key="passButton"/></label>
             <input id="password" type='password' name='password' /><br>
     </p>
     <p>
-            <button type='submit' name='send' value='signup'>
+            <button type='submit' name='submit' value='submit'>
             <fmt:message key="authButton"/>
             </button>
     </p>
+
+    <input type="hidden"
+           name="${_csrf.parameterName}"
+           value="${_csrf.token}"/>
 
     <p>
         <button type="submit" name="bregister" value="register" >

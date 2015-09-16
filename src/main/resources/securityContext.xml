@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security
+		http://www.springframework.org/schema/security/spring-security.xsd">
+	
+    <!--    <http auto-config="true" use-expressions="false">
+        <intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/**" access="ROLE_USER" />
+        <form-login login-page='/login.jsp' default-target-url="/index.jsp" always-use-default-target="true"/>
+        <logout logout-url="logout" invalidate-session="true" logout-success-url="/spring_security_login" />
+    </http>-->
+    
+    <!--вказівка які саме юрл підлягають захисту-->
+    <!--<http>-->
+        <!--&lt;!&ndash; всі запроси до такого паттерна мають мати роль "USER"&ndash;&gt;-->
+        <!--<intercept-url pattern="/**" access="hasRole('USER')" />-->
+        <!--<form-login />-->
+        <!--&lt;!&ndash; ?logout - для виходу&ndash;&gt;-->
+        <!--<logout />-->
+    <!--</http>-->
+
+    <http>
+        <!--<intercept-url pattern="/order/**" access="isFullyAuthenticated()" />-->
+        <!--<intercept-url pattern="/jsp/order/**" access="hasRole('ROLE_USER')" />-->
+        <intercept-url pattern="/stud/**" access="hasRole('STUDENT')"/>
+        <!--<form-login />-->
+        <!--<form-login-->
+                <!--login-page="/index.jsp"-->
+                <!--default-target-url="/stud"-->
+                <!--login-processing-url="/stud/login"-->
+                <!--authentication-failure-url="/login?error"-->
+                <!--username-parameter="username"-->
+                <!--password-parameter="password" />-->
+        <!--<logout logout-success-url="/login?logout" />-->
+
+        <form-login login-page='/index.jsp'
+                    authentication-failure-url="/login.html?error=true"
+                    authentication-success-handler-ref="myAuthenticationSuccessHandler"
+                    username-parameter="username"
+                    password-parameter="password"/>
+
+<!--<form-login login-page="/index.jsp" default-target-url="/stud" authentication-failure-url="/login.jsp?error=true"/>-->
+        <logout />
+        <!--        <csrf disabled="false"/>-->
+    </http>
+
+    <beans:bean id="myAuthenticationSuccessHandler"
+                class="web.MySimpleUrlAuthenticationSuccessHandler" />
+    
+    <authentication-manager>
+        <authentication-provider>
+
+            <jdbc-user-service data-source-ref="dataSource"
+            users-by-username-query="select login as username, pass as password, 'true' as enabled from UsersPrivateData where login=?"
+            authorities-by-username-query="select login as username, role as authorities from UsersPrivateData where login = ?"/>
+        </authentication-provider>
+    </authentication-manager>
+
+    <!--<global-method-security secured-annotations="enabled"/>-->
+    
+</beans:beans>

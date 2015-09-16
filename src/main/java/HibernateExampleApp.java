@@ -69,7 +69,7 @@ public class HibernateExampleApp {
 //            e.printStackTrace();
 //        }
 
-        int generatedId = usersService.createUser(testUser1,"test",RoleEnum.STUDENT);
+        int generatedId = usersService.createUser(testUser1,"test",RoleEnum.ROLE_STUDENT);
         System.out.println(generatedId);
 
 //        Users userToDel = usersService.getUserByLogin("testUser1");

@@ -5,10 +5,10 @@ package dao.domain;
  */
 
 public enum RoleEnum {
-    ANONYMOUS,
-    STUDENT,
-    TUTOR,
-    ADMIN;
+    ROLE_ANONYMOUS,
+    ROLE_STUDENT,
+    ROLE_TUTOR,
+    ROLE_ADMIN;
 
     RoleEnum() {
     }
