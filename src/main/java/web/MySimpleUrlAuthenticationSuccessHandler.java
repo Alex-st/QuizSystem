@@ -1,8 +1,12 @@
 package web;
 
 import dao.domain.LangEnum;
+import dao.domain.Users;
+import dao.repository.UsersRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.WebAttributes;
@@ -23,6 +27,9 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
+    @Autowired
+    private UsersRepo usersRepository;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response, Authentication authentication) throws IOException {
@@ -34,11 +41,23 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
                           HttpServletResponse response, Authentication authentication) throws IOException {
         String targetUrl = determineTargetUrl(authentication);
 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users sessionUser = usersRepository.getUserByLogin(auth.getName());
+
+        request.getSession().setAttribute("user", sessionUser);
+
+//        if ((request.getParameter("locale")).equals("en")) {
+//            request.getSession().setAttribute("locale", "en");
+//        }
+//        else {
+//            request.getSession().setAttribute("locale", "ru");
+//        }
+
         if ((request.getParameter("locale")).equals("en")) {
-            request.getSession().setAttribute("locale", LangEnum.ENG);
+            request.getSession().setAttribute("locale", "en");
         }
         else {
-            request.getSession().setAttribute("locale", LangEnum.RU);
+            request.getSession().setAttribute("locale", "ru");
         }
 
 //        System.out.println((request.getParameter("locale")).equals("en"));
@@ -61,7 +80,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             if (grantedAuthority.getAuthority().equals("ROLE_STUDENT")) {
                 isStudent = true;
                 break;
-            } else if (grantedAuthority.getAuthority().equals("ROLE_ADMIN")) {
+            } else if (grantedAuthority.getAuthority().equals("ROLE_TUTOR")) {
                 isAdmin = true;
                 break;
             }
@@ -71,7 +90,7 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
             //return "/jsp/studWelcomePage";
             return "/stud/";
         } else if (isAdmin) {
-            return "/console.html";
+            return "/tutor/";
         } else {
             throw new IllegalStateException();
         }

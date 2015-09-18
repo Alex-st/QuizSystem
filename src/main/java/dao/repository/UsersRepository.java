@@ -62,7 +62,15 @@ public class UsersRepository implements UsersRepo {
         TypedQuery<Users> query =
                 em.createQuery("select u from Users u where u.login = :log", Users.class);
 
-        return query.setParameter("log", login).getSingleResult();
+        Users temp = null;
+        try {
+            temp = query.setParameter("log", login).getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            temp = null;
+            e.printStackTrace();
+        }
+
+        return temp;
     }
 
     @Override

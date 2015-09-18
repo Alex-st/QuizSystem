@@ -38,14 +38,33 @@
            name="${_csrf.parameterName}"
            value="${_csrf.token}"/>
 
-    <p>
-        <button type="submit" name="bregister" value="register" >
-        <fmt:message key="registrationButton"/>
-        </button>
-    </p>
-    <br>
+    <%--<p>--%>
+        <%--<button type="submit" name="bregister" value="register" >--%>
+        <%--<fmt:message key="registrationButton"/>--%>
+        <%--</button>--%>
+
+
+    <%--</p>--%>
+    <%--<br>--%>
 
 </form>
+
+
+<form action="register/" method="get">
+    <input type="hidden"
+           name="${_csrf.parameterName}"
+           value="${_csrf.token}"/>
+
+    <input type="hidden"
+           name="locale"
+           value="ru"/>
+    <button type = "submit" name="register" value="register"><fmt:message key="toregister"/></button>
+</form>
+
+
+<%--<p>--%>
+    <%--<a href="register/"> <fmt:message key="registrationButton"/> </a>--%>
+<%--</p>--%>
 
 </body>
 </html>

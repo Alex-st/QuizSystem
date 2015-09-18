@@ -27,4 +27,8 @@
               <property name="suffix" value=".jsp"/>
        </bean>
 
+        <!--<bean id="resourceBundle" class="java.util.ResourceBundle" factory-method="getBundle">-->
+            <!--<constructor-arg type="java.lang.String" value="text"/>-->
+        <!--</bean>-->
+
 </beans>
