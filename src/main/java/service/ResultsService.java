@@ -1,6 +1,7 @@
 package service;
 
 import dao.domain.Results;
+import dao.domain.Topics;
 import dao.domain.Users;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface ResultsService {
     List<Results> getStudentResults(Users student);
 
     List<Results> getAllResults();
+
+    List<Results> getResultsByUserAndTopic(Users user, Topics topic);
 }

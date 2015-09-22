@@ -32,7 +32,7 @@ public class Questions {
     @JoinColumn(name = "userId")
     private Users author;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Answers> answers;
 
 

@@ -1,6 +1,7 @@
 package service;
 
 import dao.domain.Results;
+import dao.domain.Topics;
 import dao.domain.Users;
 import dao.repository.ResultsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,10 @@ public class ResultsServiceImpl implements ResultsService {
     @Override
     public List<Results> getAllResults() {
         return resultsRepository.getAllResults();
+    }
+
+    @Override
+    public List<Results> getResultsByUserAndTopic(Users user, Topics topic) {
+        return resultsRepository.getResultsByStudentAndTopic(user, topic);
     }
 }

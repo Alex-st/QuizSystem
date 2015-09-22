@@ -1,6 +1,7 @@
 package dao.repository;
 
 import dao.domain.Results;
+import dao.domain.Topics;
 import dao.domain.Users;
 
 import javax.transaction.Transactional;
@@ -17,6 +18,8 @@ public interface ResultsRepo {
     void deleteUserResult(Results res);
 
     List<Results> getAllResults();
+
+    List<Results> getResultsByStudentAndTopic(Users user, Topics topic);
 
     List<Results> getAllStudentResults(Users user);
 }

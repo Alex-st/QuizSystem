@@ -1,6 +1,7 @@
 package dao.repository;
 
 import dao.domain.Results;
+import dao.domain.Topics;
 import dao.domain.Users;
 import org.springframework.stereotype.Repository;
 
@@ -38,6 +39,14 @@ public class ResultsRepository implements ResultsRepo {
         TypedQuery<Results> query =
                 em.createQuery("select r from Results r ", Results.class);
         return query.getResultList();
+    }
+    
+    @Override
+    public List<Results> getResultsByStudentAndTopic(Users user, Topics topic) {
+        TypedQuery<Results> query =
+                em.createQuery("select r from Results r where r.student = :st and r.topic = :tpc", Results.class);
+
+        return query.setParameter("st", user).setParameter("tpc", topic).getResultList();
     }
 
     @Override

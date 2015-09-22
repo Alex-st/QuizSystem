@@ -6,6 +6,8 @@ import dao.repository.QuestionsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -59,6 +61,24 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public Set<Answers> getAllQuestionAnswers(Questions question) {
         return questionsRepository.getAllQuestionAnswers(question);
+    }
+
+    @Override
+    public List<Questions> getFixedNumberOfQuestions(int number, Topics topic, LangEnum lang) {
+        List<Questions> qList = questionsRepository.getAllQuestionsbyTopicAndLanguage(topic, lang);
+        int numberOfQuestions = number;
+        if (qList.size() < numberOfQuestions) {
+            numberOfQuestions = qList.size();
+        }
+
+        Collections.shuffle(qList);
+
+        List<Questions> smallList = new ArrayList<>(numberOfQuestions);
+        for (int i = 0; i < numberOfQuestions; i++) {
+            smallList.add(qList.get(i));
+        }
+
+        return smallList;
     }
 
     @Override

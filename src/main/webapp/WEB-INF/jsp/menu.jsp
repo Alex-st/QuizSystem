@@ -18,7 +18,7 @@
 <ul>
   <li><a href="${pageContext.request.contextPath}/register/"><fmt:message key="modifyPersonalData"/></a>
   </li>
-  <li><a href="${pageContext.request.contextPath}/login.jsp"><fmt:message key="exitbutton"/></a>
+  <li><a href="${pageContext.request.contextPath}/logout"><fmt:message key="exitbutton"/></a>
   </li>
   <sec:authorize access="hasRole('TUTOR')">
     <li><a href="${pageContext.request.contextPath}/tutor/"><fmt:message key="tutorTitle"/></a>
@@ -27,9 +27,9 @@
     </li>
   </sec:authorize>
   <sec:authorize access="hasRole('STUDENT')">
-    <li><a href="${pageContext.request.contextPath}/stud/passexam">Pass new Exam</a>
-    </li>
-    <li><a href="${pageContext.request.contextPath}/stud/">Student home page</a>
+    <%--<li><a href="${pageContext.request.contextPath}/stud/passexam">Pass new Exam</a>--%>
+    <%--</li>--%>
+    <li><a href="${pageContext.request.contextPath}/stud/"><fmt:message key="studentTitle"/></a>
     </li>
   </sec:authorize>
 </ul>

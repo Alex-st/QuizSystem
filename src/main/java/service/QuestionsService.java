@@ -25,5 +25,7 @@ public interface QuestionsService {
 
     Set<Answers> getAllQuestionAnswers(Questions question);
 
+    List<Questions> getFixedNumberOfQuestions(int number, Topics topic, LangEnum lang);
+
     double countMarkForReceivedQuestionAnswers(Questions question, List<Answers> receivedAnswers);
 }
