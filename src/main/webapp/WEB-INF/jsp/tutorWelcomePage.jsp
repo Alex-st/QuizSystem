@@ -20,7 +20,7 @@
 </head>
 <body>
 <fmt:message key="hello"/> ${user.name}<br>
-${result}<br>
+${resultMessage}<br>
 <c:if test="${not empty questions}" >
   <p><fmt:message key="listOfQuestion"/></p>
   <table>
@@ -30,7 +30,7 @@ ${result}<br>
     </tr>
     <c:forEach var="entry" items="${questions}">
       <tr>
-        <td>${entry.topic}</td>
+        <td>${entry.topic.topicName}</td>
         <td>${entry.text}</td>
       </tr>
     </c:forEach>

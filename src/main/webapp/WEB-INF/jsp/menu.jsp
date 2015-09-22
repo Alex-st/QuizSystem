@@ -16,7 +16,7 @@
 
 
 <ul>
-  <li><a href="registration"><fmt:message key="modifyPersonalData"/></a>
+  <li><a href="${pageContext.request.contextPath}/register/"><fmt:message key="modifyPersonalData"/></a>
   </li>
   <li><a href="${pageContext.request.contextPath}/login.jsp"><fmt:message key="exitbutton"/></a>
   </li>

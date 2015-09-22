@@ -21,4 +21,6 @@ public interface TopicsRepo {
     void deleteTopic(Topics topic);
 
     Topics getTopicById(int id);
+
+    Topics getTopicByName(String topicName);
 }

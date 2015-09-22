@@ -28,6 +28,16 @@ public class UsersPrivateDataRepository implements UsersPrivateDataRepo {
         return credentials.getUsersDataId();
     }
 
+    //We update only password and login
+    @Override
+    @Transactional
+    public void updateUserCredentials(UsersPrivateData credentials) {
+        UsersPrivateData temp = em.find(UsersPrivateData.class, credentials.getUsersDataId());
+        temp.setLogin(credentials.getLogin());
+        temp.setPass(credentials.getPass());
+        em.merge(temp);
+    }
+
     @Override
     @Transactional
     public void deleteCredentials(UsersPrivateData credentials) {

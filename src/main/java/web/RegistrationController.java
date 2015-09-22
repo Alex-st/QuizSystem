@@ -34,17 +34,22 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String registrationMethod(@RequestParam Map<String,String> allRequestParams, Model model) {
+    public String registrationMethod(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request, Model model) {
+        boolean isNewUser = true;
+        Users curUser = new Users();
 
+        if (request.getSession().getAttribute("user") != null) {
+            isNewUser = false;
+            curUser = (Users)request.getSession().getAttribute("user");
+        };
 //        System.out.println(allRequestParams.get("login"));
 //        System.out.println(usersService.getUserByLogin(allRequestParams.get("login")));
 
-        if (usersService.getUserByLogin(allRequestParams.get("login")) != null) {
+        if (isNewUser && (usersService.getUserByLogin(allRequestParams.get("login")) != null)) {
             model.addAttribute("resultMessage", "loginisincorrect");
             return "redirect:";
         }
 
-        Users curUser = new Users();
         try {
             curUser.setName(new String(allRequestParams.get("name").getBytes ("iso-8859-1"), "UTF-8"));
             curUser.setLogin(new String(allRequestParams.get("login").getBytes ("iso-8859-1"), "UTF-8"));
@@ -56,13 +61,23 @@ public class RegistrationController {
 
         RoleEnum role = RoleEnum.ROLE_STUDENT;
 
-        if (allRequestParams.get("select").equals("tutor")) {
+        if (isNewUser && allRequestParams.get("select").equals("tutor")) {
             role = RoleEnum.ROLE_TUTOR;
         }
 
-        usersService.createUser(curUser, allRequestParams.get("password"), role);
+        if (isNewUser) {
+            usersService.createUser(curUser, allRequestParams.get("password"), role);
+            model.addAttribute("resultMessage", new String("registrationSuccessfull"));
+        }
+        else {
 
-        model.addAttribute("resultMessage", new String("registrationSuccessfull"));
+            System.out.println(curUser.getName()+"/"+curUser.getEmail()+"/"+curUser.getUserId()+"/"+
+            curUser.getLogin()+"/"+curUser.getSurname());
+
+            usersService.updateUser(curUser, allRequestParams.get("password"));
+            model.addAttribute("resultMessage", new String("User has been updated"));
+        }
+
 
 //        for(Map.Entry<String, String> i: allRequestParams.entrySet()) {
 //            System.out.println(i.getKey()+"/"+i.getValue());

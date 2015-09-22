@@ -12,6 +12,8 @@ import java.util.List;
 public interface UsersService {
     int createUser(Users user, String pass, RoleEnum role);
 
+    void updateUser(Users user, String pass);
+
     UsersPrivateData getUserCredentials(Users user);
 
     List<Users> getAllStudents();

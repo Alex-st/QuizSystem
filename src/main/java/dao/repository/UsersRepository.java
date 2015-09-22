@@ -38,6 +38,9 @@ public class UsersRepository implements UsersRepo {
     @Transactional
     public void updateUser(Users user) {
         int id = user.getUserId();
+
+        System.out.println("UsersRepository-userId"+id);
+
         Users temp = (Users) em.find(Users.class, id);
         temp.setEmail(user.getEmail());
         temp.setName(user.getName());

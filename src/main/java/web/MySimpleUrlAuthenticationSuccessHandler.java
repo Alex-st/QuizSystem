@@ -44,6 +44,8 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Users sessionUser = usersRepository.getUserByLogin(auth.getName());
 
+        System.out.println("MySimpleUrlAuthHandler:"+sessionUser.getUserId());
+
         request.getSession().setAttribute("user", sessionUser);
 
 //        if ((request.getParameter("locale")).equals("en")) {

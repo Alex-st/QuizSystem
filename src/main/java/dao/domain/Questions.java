@@ -22,6 +22,7 @@ public class Questions {
     private String text;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private LangEnum language;
 
     @Column(nullable = false)

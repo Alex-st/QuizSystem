@@ -68,7 +68,13 @@ public class TopicsRepository implements TopicsRepo {
         return em.find(Topics.class, id);
     }
 
+    @Override
+    public Topics getTopicByName(String topicName) {
+        TypedQuery<Topics> query =
+                em.createQuery("select t from Topics t where t.topicName = :name", Topics.class);
 
+        return query.setParameter("name", topicName).getSingleResult();
+    }
     //for test purposes
     public static void main(String[] args) {
 

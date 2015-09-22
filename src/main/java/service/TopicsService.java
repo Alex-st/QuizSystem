@@ -18,4 +18,6 @@ public interface TopicsService {
     Topics getTopicById(int id);
 
     void removeTopic(Topics topic);
+
+    Topics getTopicByName(String topicName);
 }

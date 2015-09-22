@@ -42,4 +42,9 @@ public class TopicsSeviceImpl implements TopicsService{
         topicsRepository.deleteTopic(topic);
     }
 
+    @Override
+    public Topics getTopicByName(String topicName) {
+        return topicsRepository.getTopicByName(topicName);
+    }
+
 }

@@ -42,6 +42,17 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
+    public void updateUser(Users user, String pass) {
+        usersRepository.updateUser(user);
+
+        UsersPrivateData credentials = usersPrivateDataRepository.getCredentialsByUser(user);
+        credentials.setPass(pass);
+        credentials.setLogin(user.getLogin());
+
+        usersPrivateDataRepository.updateUserCredentials(credentials);
+    }
+
+    @Override
     public UsersPrivateData getUserCredentials(Users user) {
         return usersPrivateDataRepository.getCredentialsByUser(user);
     }

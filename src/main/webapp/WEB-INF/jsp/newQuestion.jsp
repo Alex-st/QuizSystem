@@ -40,11 +40,14 @@
           </c:forEach>
         </select></td>
         <%--<td></td>--%>
-        <td colspan="2"><input type="checkbox" name="isMultiChoice" value="multi"><fmt:message key="isQuestionMulty"/></td>
+        <td colspan="2"><input type="checkbox" name="isMultiChoice" value="true"><fmt:message key="isQuestionMulty"/></td>
       </tr>
       <tr>
         <td><fmt:message key="inputQuestion"/></td>
-        <td><input type='text' name='qtext' value=''/></td>
+        <td>
+          <textarea cols="23" rows="5" name="qtext"></textarea>
+          <%--<input type='text' name='qtext' value=''/>--%>
+        </td>
         <td></td>
       </tr>
       <tr>
@@ -52,23 +55,23 @@
       </tr>
       <tr>
         <td><fmt:message key="inputCorrectAnswer"/></td>
-        <td><input type='text' name='correctanswer' value=''/></td>
-        <td><input type="checkbox" name="correctAnswer" value="a1"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type='text' name='q1' value=''/></td>
+        <td><input type="checkbox" name="correctAnswer1" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
         <td><fmt:message key="inputSecondAnswer"/></td>
         <td><input type='text' name='q2' value=''/></td>
-        <td><input type="checkbox" name="correctAnswer" value="a2"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type="checkbox" name="correctAnswer2" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
         <td><fmt:message key="inputThirdAnswer"/></td>
         <td><input type='text' name='q3' value=''/></td>
-        <td><input type="checkbox" name="correctAnswer" value="a3"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type="checkbox" name="correctAnswer3" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
         <td><fmt:message key="inputFourthAnswer"/></td>
         <td><input type='text' name='q4' value=''/></td>
-        <td><input type="checkbox" name="correctAnswer" value="a4"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type="checkbox" name="correctAnswer4" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
         <td colspan="3" align="center"><button type = "reset" name="Reset" value="reset"><fmt:message key="reset"/></button>
@@ -76,7 +79,9 @@
       </tr>
     </table>
 
-
+    <input type="hidden"
+           name="${_csrf.parameterName}"
+           value="${_csrf.token}"/>
 
     <%--<select name="qtopic">--%>
       <%--<c:forEach var="topic" items="${topics}">--%>

@@ -14,6 +14,9 @@ public interface UsersPrivateDataRepo {
     int saveUserCredentials(UsersPrivateData credentials);
 
     @Transactional
+    void updateUserCredentials(UsersPrivateData credentials);
+
+    @Transactional
     void deleteCredentials(UsersPrivateData credentials);
 
     UsersPrivateData getCredentialsByUser(Users user);
