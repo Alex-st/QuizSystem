@@ -46,7 +46,10 @@ public class ResultsRepository implements ResultsRepo {
         TypedQuery<Results> query =
                 em.createQuery("select r from Results r where r.student = :st and r.topic = :tpc", Results.class);
 
-        return query.setParameter("st", user).setParameter("tpc", topic).getResultList();
+        List<Results> results = query.setParameter("st", user).setParameter("tpc", topic).getResultList();
+        System.out.println(results == null);
+
+        return results;
     }
 
     @Override
@@ -56,5 +59,10 @@ public class ResultsRepository implements ResultsRepo {
 
         return query.setParameter("st", user).getResultList();
     }
+
+//    @Override
+//    public List<Results> getSingleLatestResults(Users user) {
+//        List<Results> allResults =
+//    }
 
 }

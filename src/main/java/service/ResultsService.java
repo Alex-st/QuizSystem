@@ -16,7 +16,11 @@ public interface ResultsService {
 
     List<Results> getStudentResults(Users student);
 
+    List<Results> getResultsByStudentAndTopic(Users student, Topics topic);
+
     List<Results> getAllResults();
+
+    int createNewResultWithDeletingPrevious(Results result);
 
     List<Results> getResultsByUserAndTopic(Users user, Topics topic);
 }

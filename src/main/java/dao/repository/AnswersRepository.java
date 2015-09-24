@@ -1,8 +1,6 @@
 package dao.repository;
 
 import dao.domain.Answers;
-import dao.domain.Questions;
-import dao.domain.Users;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -43,5 +41,10 @@ public class AnswersRepository implements AnswersRepo {
         em.remove(temp);
     }
 
+    @Override
+    public Answers getAnswerById(int id) {
+        Answers temp = (Answers)em.find(Answers.class, id);
+        return temp;
+    }
 
 }

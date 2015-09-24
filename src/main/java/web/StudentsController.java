@@ -14,9 +14,7 @@ import service.ResultsService;
 import service.TopicsService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by alex on 9/14/15.
@@ -74,11 +72,11 @@ public class StudentsController {
         request.getSession().setAttribute("questionsList", initialQuestions);
 
         model.addAttribute("question", initialQuestions.get(0).getText());
-        model.addAttribute("isMulti", initialQuestions.get(0).isMultipleQuestions());
+        request.getSession().setAttribute("isMulti", initialQuestions.get(0).isMultipleQuestions());
 
-        List<String> answers = new ArrayList<>();
+        Map<String, Integer> answers = new HashMap<>();
         for (Answers i: initialQuestions.get(0).getAnswers()) {
-            answers.add(i.getText());
+            answers.put(i.getText(), i.getAnswerId());
         }
         request.getSession().setAttribute("curQuestion", 0);
         model.addAttribute("answers", answers);
@@ -88,12 +86,18 @@ public class StudentsController {
 
     @Secured("ROLE_STUDENT")
     @RequestMapping(value = "/examprocess", method = RequestMethod.POST)
-    public String examProcessing(HttpServletRequest request, @RequestParam Map<String,String> allRequestParams, Model model) {
+    public String examProcessing(HttpServletRequest request,
+                                 //@RequestParam Map<String, Object> allRequestParams,
+                                 @RequestParam("send") String isSend,
+                                 @RequestParam(value ="answer", required=false) String[] answer,
+                                 Model model) {
+
+        List<Questions> qList = (List<Questions>)request.getSession().getAttribute("questionsList");
+        int curQuestion = (int) request.getSession().getAttribute("curQuestion");
+
 
         //---------------checking if button "next" was pushed----------------
-        if (allRequestParams.get("send").equals("next")) {
-            List<Questions> qList = (List<Questions>)request.getSession().getAttribute("questionsList");
-            int curQuestion = (int) request.getSession().getAttribute("curQuestion");
+        if (isSend.equals("next")) {
 
             if (curQuestion == (qList.size()-1)) {
                 curQuestion = 0;
@@ -101,21 +105,85 @@ public class StudentsController {
             else curQuestion++;
 
             model.addAttribute("question", qList.get(curQuestion).getText());
-            model.addAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
+            request.getSession().setAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
 
-            List<String> answers = new ArrayList<>();
+            Map<String, Integer> answers = new HashMap<>();
             for (Answers i: qList.get(curQuestion).getAnswers()) {
-                answers.add(i.getText());
+                answers.put(i.getText(), i.getAnswerId());
             }
             request.getSession().setAttribute("curQuestion", curQuestion);
             model.addAttribute("answers", answers);
 
             return "exam";
         }
-        //------------------------------------------------------------------------------
+        //-----------------------processing received answer----------------------------
+        List<Answers> receivedAnswers = new ArrayList<>();
 
+        if (!(boolean)request.getSession().getAttribute("isMulti")) {
+            if (answer != null) {
+                Answers a1 = questionsService.getAnswerById(Integer.valueOf(answer[0]));
+                receivedAnswers.add(a1);
+            }
+        }
+        else {
+            if (answer != null) {
+                for (String i : answer) {
+                    Answers a = questionsService.getAnswerById(Integer.valueOf(i));
+                    receivedAnswers.add(a);
+                }
+            }
 
+        }
 
+        double curQuestionMark = questionsService.countMarkForReceivedQuestionAnswers
+                (qList.get(curQuestion), receivedAnswers);
+
+        double testMark = (double)request.getSession().getAttribute("testmark")+curQuestionMark;
+        request.getSession().setAttribute("testmark", testMark);
+
+        qList.remove(curQuestion);
+        request.getSession().setAttribute("questionsList", qList);
+
+        if (curQuestion == qList.size()) {
+            curQuestion = 0;
+        }
+
+        //---------------processing finishing of test------------------------
+        if(qList.size() == 0) {
+
+            Results testResult = new Results();
+            testResult.setDate(new Date());
+            testResult.setMark(testMark);
+            testResult.setTopic((Topics)request.getSession().getAttribute("testtopic"));
+            testResult.setStudent((Users)request.getSession().getAttribute("user"));
+
+            //resultsService.createNewResult(testResult);
+            resultsService.createNewResultWithDeletingPrevious(testResult);
+
+            request.getSession().removeAttribute("testtopic");
+            request.getSession().removeAttribute("testmark");
+            request.getSession().removeAttribute("curQuestion");
+            request.getSession().removeAttribute("isMulti");
+            request.getSession().removeAttribute("questionsList");
+
+            if (request.getSession().getAttribute("locale").equals("ru"))
+                model.addAttribute("resultMessage", "Результат вашего теста "+testMark);
+            else model.addAttribute("resultMessage", "Result of your attempt "+testMark);
+
+            return "studWelcomePage";
+        }
+
+        //------------new question data loading----------------------------------------
+
+        model.addAttribute("question", qList.get(curQuestion).getText());
+        request.getSession().setAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
+
+        Map<String, Integer> answers = new HashMap<>();
+        for (Answers i: qList.get(curQuestion).getAnswers()) {
+            answers.put(i.getText(), i.getAnswerId());
+        }
+        request.getSession().setAttribute("curQuestion", curQuestion);
+        model.addAttribute("answers", answers);
 
         return "exam";
     }
@@ -128,11 +196,5 @@ public class StudentsController {
 //        return "exam";
 //    }
 
-//    @RequestMapping(value = "/login", method = RequestMethod.GET)
-//    public String loginPage(Model model) {
-//
-//
-//        return "studWelcomePage";
-//    }
 
 }

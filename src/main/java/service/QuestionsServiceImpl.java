@@ -20,8 +20,8 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Autowired
     private QuestionsRepo questionsRepository;
 
-//    @Autowired
-//    private AnswersRepo answersRepository;
+    @Autowired
+    private AnswersRepo answersRepository;
 
     @Override
     public int addNewQuestion(Questions question) {
@@ -41,6 +41,11 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public Questions getQuestionById(int id) {
         return questionsRepository.getQuestionById(id);
+    }
+
+    @Override
+    public Answers getAnswerById(int id) {
+        return answersRepository.getAnswerById(id);
     }
 
     @Override
@@ -84,6 +89,10 @@ public class QuestionsServiceImpl implements QuestionsService {
     @Override
     public double countMarkForReceivedQuestionAnswers(Questions question, List<Answers> receivedAnswers){
         double mark = 0.;
+        if (receivedAnswers.size() == 0) {
+            return 0;
+        }
+
         if (!question.isMultipleQuestions()) {
             if (receivedAnswers.get(0).isCorrect()) {
                 return 1.;
@@ -93,16 +102,51 @@ public class QuestionsServiceImpl implements QuestionsService {
 
         List<Answers> correctAnswers = questionsRepository.getAllCorrectAnswersOfQuestion(question);
 
-        for (Answers i: receivedAnswers) {
-            if (correctAnswers.contains(i)) {
-                mark += 1/correctAnswers.size();
+        for (Answers i: correctAnswers) {
+            System.out.println("QS: Correct answer:"+i.getText()+"/"+i.getAnswerId());
+        }
+
+//        for (Answers i: receivedAnswers) {
+//
+//            System.out.println("QS: Received answer:"+i.getText()+"/"+i.getAnswerId());
+//            System.out.println(correctAnswers.contains(i));
+//
+//            if (correctAnswers.contains(i)) {
+//                mark += 1./correctAnswers.size();
+//
+//                System.out.println("QS:Mark for "+i.getAnswerId()+" is "+mark);
+//            }
+//            else {
+//                mark-= 1./correctAnswers.size();
+//                System.out.println("QS:Mark for "+i.getAnswerId()+" is "+mark);
+//            }
+//        }
+
+        for (Answers ra: receivedAnswers) {
+
+            boolean isAnwerTrue = false;
+
+            for (Answers ca: correctAnswers) {
+                if (ca.getAnswerId() == ra.getAnswerId()) {
+                    isAnwerTrue = true;
+                    break;
+                }
             }
-            else mark-= 1/correctAnswers.size();
+
+            if (isAnwerTrue) {
+                mark += 1. / correctAnswers.size();
+            }
+            else {
+            mark -= 1. / correctAnswers.size();
+            }
         }
 
 
         if (mark < 0)
             return 0.;
+
+        if (Math.abs(mark-1) <= 0.001)
+            mark = 1;
 
         return mark;
     }

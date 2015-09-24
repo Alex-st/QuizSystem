@@ -27,6 +27,7 @@
         <!--<intercept-url pattern="/order/**" access="isFullyAuthenticated()" />-->
         <!--<intercept-url pattern="/jsp/order/**" access="hasRole('ROLE_USER')" />-->
         <intercept-url pattern="/stud/**" access="hasRole('STUDENT')"/>
+        <!--<logout logout-success-url="index.jsp" />-->
         <!--<form-login />-->
         <!--<form-login-->
                 <!--login-page="/index.jsp"-->

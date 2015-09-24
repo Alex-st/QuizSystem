@@ -18,18 +18,20 @@
     <title><fmt:message key="examPage"/></title>
 </head>
 <body>
+${testmark}<br>
 <form name="questionForm" action="examprocess" method="post">
   <p><b><center>${question}</center></b></p>
   <center>
     <c:forEach var="ans" items="${answers}">
       <p class="keeplogin">
         <c:if test="${isMulti == false}" >
-          <input type="radio" name="answer" value="${ans}" id="${ans}">
+          <input type="radio" name="answer" value="${ans.value}" id="${ans.value}"/>
         </c:if>
         <c:if test="${isMulti == true}" >
-          <input type="checkbox" name="answer" value="${ans}">
+          <input type="checkbox" name="answer" value="${ans.value}" id="${ans.value}"/>
+          <%--<input type="hidden"   name="isMulti" value="true"/>--%>
         </c:if>
-      <label for="${ans}">${ans}</label></p>
+      <label for="${ans.value}">${ans.key}</label></p>
     </c:forEach>
 
     <button type="submit" name="send" value="exam"><fmt:message key="answerQuestion"/></button>

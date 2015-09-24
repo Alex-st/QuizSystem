@@ -16,4 +16,6 @@ public interface AnswersRepo {
 
     @Transactional
     void deleteAnswer(Answers answer);
+
+    Answers getAnswerById(int id);
 }

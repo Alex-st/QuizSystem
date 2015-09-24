@@ -17,6 +17,8 @@ public interface QuestionsService {
 
     Questions getQuestionById(int id);
 
+    Answers getAnswerById(int id);
+
     List<Questions> getQuestionsByAuthor(Users tutor);
 
     List<Questions> getAllQuestionsByTopic(Topics topic);

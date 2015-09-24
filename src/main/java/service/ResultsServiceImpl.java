@@ -34,8 +34,27 @@ public class ResultsServiceImpl implements ResultsService {
     }
 
     @Override
+    public List<Results> getResultsByStudentAndTopic(Users student, Topics topic) {
+        return resultsRepository.getResultsByStudentAndTopic(student, topic);
+    }
+
+    @Override
     public List<Results> getAllResults() {
         return resultsRepository.getAllResults();
+    }
+
+    @Override
+    public int createNewResultWithDeletingPrevious(Results result) {
+        Topics topic = result.getTopic();
+        Users student = result.getStudent();
+        List<Results> prevResults = getResultsByStudentAndTopic(student, topic);
+
+        if (prevResults!=null && prevResults.size() > 0) {
+            deleteResult(prevResults.get(0));
+        }
+
+        return resultsRepository.saveUserResult(result);
+
     }
 
     @Override
