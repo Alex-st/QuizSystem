@@ -38,7 +38,7 @@
                 <!--password-parameter="password" />-->
         <!--<logout logout-success-url="/login?logout" />-->
 
-        <form-login login-page='/index.jsp'
+        <form-login login-page='/index'
                     authentication-failure-url="/login.html?error=true"
                     authentication-success-handler-ref="myAuthenticationSuccessHandler"
                     username-parameter="username"

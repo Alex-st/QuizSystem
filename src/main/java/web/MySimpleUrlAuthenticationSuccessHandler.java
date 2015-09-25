@@ -41,19 +41,6 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
                           HttpServletResponse response, Authentication authentication) throws IOException {
         String targetUrl = determineTargetUrl(authentication);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Users sessionUser = usersRepository.getUserByLogin(auth.getName());
-
-        System.out.println("MySimpleUrlAuthHandler:"+sessionUser.getUserId());
-
-        request.getSession().setAttribute("user", sessionUser);
-
-//        if ((request.getParameter("locale")).equals("en")) {
-//            request.getSession().setAttribute("locale", "en");
-//        }
-//        else {
-//            request.getSession().setAttribute("locale", "ru");
-//        }
 
         if ((request.getParameter("locale")).equals("en")) {
             request.getSession().setAttribute("locale", "en");
@@ -61,6 +48,14 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         else {
             request.getSession().setAttribute("locale", "ru");
         }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Users sessionUser = usersRepository.getUserByLogin(auth.getName());
+
+        System.out.println("MySimpleUrlAuthHandler:"+sessionUser.getUserId());
+
+        request.getSession().setAttribute("user", sessionUser);
+
 
 //        System.out.println((request.getParameter("locale")).equals("en"));
 //        System.out.println(request.getParameter("locale"));

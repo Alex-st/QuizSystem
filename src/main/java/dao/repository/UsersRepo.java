@@ -25,4 +25,6 @@ public interface UsersRepo {
     Users getUserByLogin(String login);
 
     List<Users> getAllUsers();
+
+    List<String> getAllLogins();
 }

@@ -13,6 +13,9 @@
 <body>
 <h2><fmt:message key="title"/></h2>
 
+<c:if test="${not empty resultMessage}" >
+<fmt:message key="${resultMessage}"/><br>
+</c:if>
 <form name="loginForm" method="post" action="login">
 
     <select name="locale">
@@ -38,14 +41,14 @@
            name="${_csrf.parameterName}"
            value="${_csrf.token}"/>
 
-    <%--<p>--%>
-        <%--<button type="submit" name="bregister" value="register" >--%>
-        <%--<fmt:message key="registrationButton"/>--%>
-        <%--</button>--%>
+    <p>
+        <button type="submit" name="submit" value="register" >
+        <fmt:message key="registrationButton"/>
+        </button>
 
 
-    <%--</p>--%>
-    <%--<br>--%>
+    </p>
+    <br>
 
 </form>
 

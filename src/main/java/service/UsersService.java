@@ -23,4 +23,6 @@ public interface UsersService {
     Users getUserByLogin(String login);
 
     void deleteUser(Users user);
+
+    List<String> getAllLogins();
 }

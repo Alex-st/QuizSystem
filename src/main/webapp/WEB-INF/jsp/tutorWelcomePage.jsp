@@ -20,7 +20,11 @@
 </head>
 <body>
 <fmt:message key="hello"/> ${user.name}<br>
-${resultMessage}<br>
+
+<c:if test="${not empty resultMessage}" >
+  <fmt:message key="${resultMessage}"/><br>
+</c:if>
+
 <c:if test="${not empty questions}" >
   <p><fmt:message key="listOfQuestion"/></p>
   <table>

@@ -20,8 +20,11 @@ import java.util.*;
  * Created by alex on 9/14/15.
  */
 @Controller("studentsController")
+@Secured("ROLE_STUDENT")
 @RequestMapping("/stud")
 public class StudentsController {
+
+    private static final int NUMBER_OF_QUESTIONS_IN_TEST = 5;
 
     @Autowired
     ResultsService resultsService;
@@ -32,9 +35,7 @@ public class StudentsController {
     @Autowired
     QuestionsService questionsService;
 
-    @Secured("ROLE_STUDENT")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String wellcomePage(HttpServletRequest request, Model model) {
+    private LangEnum getCurrentLanguage(HttpServletRequest request) {
 
         String language = (String)request.getSession().getAttribute("locale");
         LangEnum curLang = LangEnum.ENG;
@@ -42,52 +43,56 @@ public class StudentsController {
         if (language.equals("ru")) {
             curLang = LangEnum.RU;
         }
+        return curLang;
+    }
 
-        List<Topics> topics = topicsService.getAllTopicsByLanguage(curLang);
-        model.addAttribute("topics", topics);
+    //method prepares "curQuestion"
+    //and returns list of its answers
+    private Map<String, Integer> nextQuestion(int curQuestion, List<Questions> qList,
+                                              Model model, HttpServletRequest request) {
+
+        model.addAttribute("question", qList.get(curQuestion).getText());
+        request.getSession().setAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
+
+        Map<String, Integer> answers = new HashMap<>();
+        for (Answers i: qList.get(curQuestion).getAnswers()) {
+            answers.put(i.getText(), i.getAnswerId());
+        }
+        request.getSession().setAttribute("curQuestion", curQuestion);
+        return answers;
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String wellcomePage(HttpServletRequest request, Model model) {
 
         Users curUser = (Users)request.getSession().getAttribute("user");
         List<Results> studresults = resultsService.getStudentResults(curUser);
 
+        model.addAttribute("topics", topicsService.getAllTopicsByLanguage(getCurrentLanguage(request)));
         model.addAttribute("studresults", studresults);
 
         return "studWelcomePage";
     }
 
-    @Secured("ROLE_STUDENT")
     @RequestMapping(value = "/examinit", method = RequestMethod.GET)
     public String examInit(HttpServletRequest request, @RequestParam("test") int topicId, Model model) {
         Topics curTopic = topicsService.getTopicById(topicId);
-        request.getSession().setAttribute("testmark", 0.);
         request.getSession().setAttribute("testtopic", curTopic);
 
-        String language = (String)request.getSession().getAttribute("locale");
-        LangEnum curLang = LangEnum.ENG;
+        request.getSession().setAttribute("testmark", 0.);
 
-        if (language.equals("ru")) {
-            curLang = LangEnum.RU;
-        }
-
-        List<Questions> initialQuestions = questionsService.getFixedNumberOfQuestions(5, curTopic, curLang);
+        List<Questions> initialQuestions = questionsService.getFixedNumberOfQuestions(NUMBER_OF_QUESTIONS_IN_TEST,
+                                           curTopic, getCurrentLanguage(request));
         request.getSession().setAttribute("questionsList", initialQuestions);
 
-        model.addAttribute("question", initialQuestions.get(0).getText());
-        request.getSession().setAttribute("isMulti", initialQuestions.get(0).isMultipleQuestions());
-
-        Map<String, Integer> answers = new HashMap<>();
-        for (Answers i: initialQuestions.get(0).getAnswers()) {
-            answers.put(i.getText(), i.getAnswerId());
-        }
-        request.getSession().setAttribute("curQuestion", 0);
+        Map<String, Integer> answers = nextQuestion(0, initialQuestions, model, request);
         model.addAttribute("answers", answers);
 
         return "exam";
     }
 
-    @Secured("ROLE_STUDENT")
     @RequestMapping(value = "/examprocess", method = RequestMethod.POST)
     public String examProcessing(HttpServletRequest request,
-                                 //@RequestParam Map<String, Object> allRequestParams,
                                  @RequestParam("send") String isSend,
                                  @RequestParam(value ="answer", required=false) String[] answer,
                                  Model model) {
@@ -104,14 +109,7 @@ public class StudentsController {
             }
             else curQuestion++;
 
-            model.addAttribute("question", qList.get(curQuestion).getText());
-            request.getSession().setAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
-
-            Map<String, Integer> answers = new HashMap<>();
-            for (Answers i: qList.get(curQuestion).getAnswers()) {
-                answers.put(i.getText(), i.getAnswerId());
-            }
-            request.getSession().setAttribute("curQuestion", curQuestion);
+            Map<String, Integer> answers = nextQuestion(curQuestion, qList, model, request);
             model.addAttribute("answers", answers);
 
             return "exam";
@@ -119,20 +117,11 @@ public class StudentsController {
         //-----------------------processing received answer----------------------------
         List<Answers> receivedAnswers = new ArrayList<>();
 
-        if (!(boolean)request.getSession().getAttribute("isMulti")) {
-            if (answer != null) {
-                Answers a1 = questionsService.getAnswerById(Integer.valueOf(answer[0]));
-                receivedAnswers.add(a1);
+        if (answer != null) {
+            for (String i : answer) {
+                Answers a = questionsService.getAnswerById(Integer.valueOf(i));
+                receivedAnswers.add(a);
             }
-        }
-        else {
-            if (answer != null) {
-                for (String i : answer) {
-                    Answers a = questionsService.getAnswerById(Integer.valueOf(i));
-                    receivedAnswers.add(a);
-                }
-            }
-
         }
 
         double curQuestionMark = questionsService.countMarkForReceivedQuestionAnswers
@@ -170,31 +159,17 @@ public class StudentsController {
                 model.addAttribute("resultMessage", "Результат вашего теста "+testMark);
             else model.addAttribute("resultMessage", "Result of your attempt "+testMark);
 
+            model.addAttribute("topics", topicsService.getAllTopicsByLanguage(getCurrentLanguage(request)));
+
             return "studWelcomePage";
         }
 
         //------------new question data loading----------------------------------------
 
-        model.addAttribute("question", qList.get(curQuestion).getText());
-        request.getSession().setAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
-
-        Map<String, Integer> answers = new HashMap<>();
-        for (Answers i: qList.get(curQuestion).getAnswers()) {
-            answers.put(i.getText(), i.getAnswerId());
-        }
-        request.getSession().setAttribute("curQuestion", curQuestion);
+        Map<String, Integer> answers = nextQuestion(curQuestion, qList, model, request);
         model.addAttribute("answers", answers);
 
         return "exam";
     }
-//
-//    @Secured("ROLE_STUDENT")
-//    @RequestMapping(value = "/examnextq", method = RequestMethod.POST)
-//    public String nextQuestion(HttpServletRequest request, Model model) {
-//
-//
-//        return "exam";
-//    }
-
 
 }

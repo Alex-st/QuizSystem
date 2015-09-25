@@ -70,7 +70,7 @@ public class UsersRepository implements UsersRepo {
             temp = query.setParameter("log", login).getSingleResult();
         } catch (javax.persistence.NoResultException e) {
             temp = null;
-            e.printStackTrace();
+           // e.printStackTrace();
         }
 
         return temp;
@@ -80,6 +80,13 @@ public class UsersRepository implements UsersRepo {
     public List<Users> getAllUsers() {
         TypedQuery<Users> query =
                 em.createQuery("select u from Users u", Users.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<String> getAllLogins() {
+        TypedQuery<String> query =
+                em.createQuery("select u.login from Users u", String.class);
         return query.getResultList();
     }
 

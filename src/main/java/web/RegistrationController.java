@@ -4,11 +4,13 @@ import dao.domain.RoleEnum;
 import dao.domain.Users;
 import dao.domain.UsersPrivateData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import service.UsersService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,40 +28,63 @@ public class RegistrationController {
     private UsersService usersService;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String registrationPage(HttpServletRequest request) {
+    public String registrationPage(HttpServletRequest request, Model model) {
 
-        request.getSession().setAttribute("locale", request.getParameter("locale"));
+        if (request.getParameter("locale") != null) {
+            request.getSession().setAttribute("locale", request.getParameter("locale"));
+        }
+
+        if (request.getSession().getAttribute("user") != null) {
+            model.addAttribute("registerButton", "updateButton");
+        }
+        else {
+            model.addAttribute("registerButton", "registrationButton");
+        }
 
         return "registration";
     }
 
     @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String registrationMethod(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request, Model model) {
+    public String registrationMethod(@RequestParam Map<String,String> allRequestParams,
+                                     HttpServletRequest request, Model model,
+                                     RedirectAttributes redirectAttributes,
+                                     Authentication auth) {
+        //----------parameter initialization--------------------------
         boolean isNewUser = true;
         Users curUser = new Users();
+        RoleEnum role = RoleEnum.ROLE_STUDENT;
 
         if (request.getSession().getAttribute("user") != null) {
             isNewUser = false;
             curUser = (Users)request.getSession().getAttribute("user");
-        };
-//        System.out.println(allRequestParams.get("login"));
-//        System.out.println(usersService.getUserByLogin(allRequestParams.get("login")));
+            role = usersService.getUserCredentials(curUser).getRole();
+        }
 
-        if (isNewUser && (usersService.getUserByLogin(allRequestParams.get("login")) != null)) {
-            model.addAttribute("resultMessage", "loginisincorrect");
+        //----------checking whether user with such input login is already exist-----
+        //todo add parameters to redirectAttributes
+
+        if (isNewUser && (usersService.getAllLogins().contains(allRequestParams.get("login")))) {
+            System.out.println("Huston we got problems");
+//            redirectAttributes.addFlashAttribute("resultMessage", "loginisincorrect");
+//            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
             return "redirect:";
         }
 
-        try {
-            curUser.setName(new String(allRequestParams.get("name").getBytes ("iso-8859-1"), "UTF-8"));
-            curUser.setLogin(new String(allRequestParams.get("login").getBytes ("iso-8859-1"), "UTF-8"));
-            curUser.setSurname(new String(allRequestParams.get("surname").getBytes ("iso-8859-1"), "UTF-8"));
-            curUser.setEmail(new String(allRequestParams.get("email").getBytes ("iso-8859-1"), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (!isNewUser && !curUser.getLogin().equals(allRequestParams.get("login"))
+                && (usersService.getAllLogins().contains(allRequestParams.get("login")))) {
+            System.out.println("Huston we got problems too");
+//            redirectAttributes.addFlashAttribute("resultMessage", "loginisincorrect");
+//            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
+            return "redirect:";
         }
 
-        RoleEnum role = RoleEnum.ROLE_STUDENT;
+
+        // ----------------creating new user with received data------------------------
+
+        curUser.setName(allRequestParams.get("name"));
+        curUser.setLogin(allRequestParams.get("login"));
+        curUser.setSurname(allRequestParams.get("surname"));
+        curUser.setEmail(allRequestParams.get("email"));
 
         if (isNewUser && allRequestParams.get("select").equals("tutor")) {
             role = RoleEnum.ROLE_TUTOR;
@@ -67,23 +92,23 @@ public class RegistrationController {
 
         if (isNewUser) {
             usersService.createUser(curUser, allRequestParams.get("password"), role);
-            model.addAttribute("resultMessage", new String("registrationSuccessfull"));
-        }
-        else {
-
-            System.out.println(curUser.getName()+"/"+curUser.getEmail()+"/"+curUser.getUserId()+"/"+
-            curUser.getLogin()+"/"+curUser.getSurname());
-
+            redirectAttributes.addFlashAttribute("resultMessage", "registrationSuccessfull");
+        } else {
             usersService.updateUser(curUser, allRequestParams.get("password"));
-            model.addAttribute("resultMessage", new String("User has been updated"));
+            redirectAttributes.addFlashAttribute("resultMessage", "updateSuccessfull");
+
+
+            if (auth.getAuthorities().toString().equalsIgnoreCase("[ROLE_TUTOR]")){
+                return "redirect:/tutor/";
+            };
+            if (auth.getAuthorities().toString().equalsIgnoreCase("[ROLE_STUDENT]")){
+                return "redirect:/stud/";
+            };
+
         }
 
 
-//        for(Map.Entry<String, String> i: allRequestParams.entrySet()) {
-//            System.out.println(i.getKey()+"/"+i.getValue());
-//        }
-
-        return "redirect:";
+        return "redirect:/index";
     }
 
 }

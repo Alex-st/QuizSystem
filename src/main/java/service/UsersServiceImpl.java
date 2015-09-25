@@ -79,6 +79,9 @@ public class UsersServiceImpl implements UsersService {
         usersRepository.deleteUser(user);
     }
 
-
+    @Override
+    public List<String> getAllLogins() {
+        return usersRepository.getAllLogins();
+    }
 
 }

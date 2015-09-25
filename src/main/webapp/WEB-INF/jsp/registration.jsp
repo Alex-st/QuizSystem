@@ -23,22 +23,10 @@
 <body>
 <div id="wrapper">
 
-  <%--something to delete--%>
+  <%--something additional--%>
   <center>
-      <fmt:message key="${requestScope.resultMessage}"/>
-    test<br>
-
-    <c:out value="${locale}" />
-
-    <c:out value="${resultMessage}" />
-    <c:out value="${requestScope.resultMessage}" />
-    test<br>
-    ${resultMessage}<br>
-    ${user.userId}<br>
-
-    <fmt:message key="${resultMessage}"/>
-    <c:if test="${not empty requestScope.resultMessage}">
-      <fmt:message key="${requestScope.resultMessage}"/>
+    <c:if test="${not empty resultMessage}">
+      <fmt:message key="${resultMessage}"/>
     </c:if>
   </center>
   <%----------------------------------------------%>
@@ -80,7 +68,7 @@
 
       <button type = "reset" name="Reset" value="reset"><fmt:message key="reset"/></button>
       <button type = "submit" name="send" value="register">
-        <fmt:message key="toregister"/>
+        <fmt:message key="${registerButton}"/>
       </button>
 
       <input type="hidden"

@@ -20,7 +20,9 @@
 </head>
 <body>
 <fmt:message key="hello"/> ${user.name}<br>
-${resultMessage}<br>
+<c:if test="${not empty resultMessage}" >
+  <fmt:message key="${resultMessage}"/><br>
+</c:if>
 
 <c:if test="${not empty studresults}" >
   <table>
@@ -53,5 +55,13 @@ ${resultMessage}<br>
 
 
 <c:import url="/WEB-INF/jsp/menu.jsp"></c:import>
+
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post">
+  <input type="submit" value="Log out" />
+  <input type="hidden"
+         name="${_csrf.parameterName}"
+         value="${_csrf.token}"/>
+</form>
 </body>
 </html>
