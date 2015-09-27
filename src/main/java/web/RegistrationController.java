@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +16,8 @@ import service.UsersService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,6 +56,7 @@ public class RegistrationController {
         boolean isNewUser = true;
         Users curUser = new Users();
         RoleEnum role = RoleEnum.ROLE_STUDENT;
+        UserValidator userValidator = new UserValidator();
 
         if (request.getSession().getAttribute("user") != null) {
             isNewUser = false;
@@ -60,24 +64,16 @@ public class RegistrationController {
             role = usersService.getUserCredentials(curUser).getRole();
         }
 
-        //----------checking whether user with such input login is already exist-----
-        //todo add parameters to redirectAttributes
+        userValidator.setIsUserNew(isNewUser);
+        userValidator.setUsersService(usersService);
 
-        if (isNewUser && (usersService.getAllLogins().contains(allRequestParams.get("login")))) {
-            System.out.println("Huston we got problems");
-//            redirectAttributes.addFlashAttribute("resultMessage", "loginisincorrect");
-//            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
-            return "redirect:";
-        }
-
+        // if current existed user change his login to some other already presented in DB
         if (!isNewUser && !curUser.getLogin().equals(allRequestParams.get("login"))
                 && (usersService.getAllLogins().contains(allRequestParams.get("login")))) {
-            System.out.println("Huston we got problems too");
-//            redirectAttributes.addFlashAttribute("resultMessage", "loginisincorrect");
-//            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
-            return "redirect:";
+            redirectAttributes.addFlashAttribute("resultMessage", "loginexist");
+            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
+            return "redirect:/register/";
         }
-
 
         // ----------------creating new user with received data------------------------
 
@@ -86,8 +82,38 @@ public class RegistrationController {
         curUser.setSurname(allRequestParams.get("surname"));
         curUser.setEmail(allRequestParams.get("email"));
 
+        redirectAttributes.addFlashAttribute("user", curUser);
+
+        DataBinder binder = new DataBinder(curUser);
+        binder.setValidator(userValidator);
+        binder.validate();
+
+        //userValidator.validate(curUser, result);
+        BindingResult results = binder.getBindingResult();
+
+        if (results.hasErrors()) {
+
+            Map<String, String> errorMessages = new HashMap<>();
+
+            List<FieldError> errors = results.getFieldErrors();
+            for (FieldError error : errors ) {
+                System.out.println (error.getCode() + " - " + error.getDefaultMessage());
+                errorMessages.put(error.getCode(), error.getDefaultMessage());
+
+            }
+
+            redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return "redirect:/register/";
+        }
+
         if (isNewUser && allRequestParams.get("select").equals("tutor")) {
             role = RoleEnum.ROLE_TUTOR;
+        }
+
+        if (allRequestParams.get("password").length() < 6) {
+            redirectAttributes.addFlashAttribute("passwordError", "passisincorrect");
+            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
+            return "redirect:/register/";
         }
 
         if (isNewUser) {
@@ -106,7 +132,6 @@ public class RegistrationController {
             };
 
         }
-
 
         return "redirect:/index";
     }

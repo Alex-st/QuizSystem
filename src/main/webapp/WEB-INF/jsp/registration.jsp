@@ -23,6 +23,10 @@
 <body>
 <div id="wrapper">
 
+  <c:if test="${not empty user}">
+    <fmt:message key="hello"/> ${user.name}<br>
+  </c:if>
+
   <%--something additional--%>
   <center>
     <c:if test="${not empty resultMessage}">
@@ -47,23 +51,34 @@
       <p>
         <label for="bname" class="uname" data-icon="*"><fmt:message key="name"/></label>
         <input id="bname" type='text' name='name' value='${user.name}'/>
+        <c:if test="${not empty errorMessages['nameError']}">
+          <fmt:message key="${errorMessages['nameError']}"/>
+        </c:if>
       </p>
       <p>
         <fmt:message key="surname"/>
         <input type='text' name='surname' value='${user.surname}'/>
       </p>
-
       <p>
         <label for="em" class="uname" data-icon="*"><fmt:message key="email"/></label>
         <input id="em" type="text" name='email' value='${user.email}'/>
+        <c:if test="${not empty errorMessages['emailError']}">
+          <fmt:message key="${errorMessages['emailError']}"/>
+        </c:if>
       </p>
       <p>
         <label for="logintext" class="youpasswd" data-icon="u"><fmt:message key="loginButton"/></label>
         <input id="logintext" type='text' name='login' value='${user.login}'/>
+        <c:if test="${not empty errorMessages['loginError']}">
+          <fmt:message key="${errorMessages['loginError']}"/>
+        </c:if>
       </p>
       <p>
         <label for="password" class="youpasswd" data-icon="p"><fmt:message key="passButton"/></label>
         <input id="password" type="password" name='password' value=''/>
+        <c:if test="${not empty passwordError}">
+          <fmt:message key="${passwordError}"/>
+        </c:if>
       </p>
 
       <button type = "reset" name="Reset" value="reset"><fmt:message key="reset"/></button>
