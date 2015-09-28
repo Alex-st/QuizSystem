@@ -3,8 +3,11 @@ package web;
 import dao.domain.RoleEnum;
 import dao.domain.Users;
 import dao.domain.UsersPrivateData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.*;
@@ -30,8 +33,13 @@ public class RegistrationController {
     @Autowired
     private UsersService usersService;
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(RegistrationController.class);
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String registrationPage(HttpServletRequest request, Model model) {
+
+//        logger.debug("User Registration page");
 
         if (request.getParameter("locale") != null) {
             request.getSession().setAttribute("locale", request.getParameter("locale"));
@@ -116,13 +124,21 @@ public class RegistrationController {
             return "redirect:/register/";
         }
 
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(allRequestParams.get("password"));
+
         if (isNewUser) {
-            usersService.createUser(curUser, allRequestParams.get("password"), role);
+            //usersService.createUser(curUser, allRequestParams.get("password"), role);
+            usersService.createUser(curUser, hashedPassword, role);
             redirectAttributes.addFlashAttribute("resultMessage", "registrationSuccessfull");
+
+            logger.debug("User "+curUser+" has been registered");
         } else {
-            usersService.updateUser(curUser, allRequestParams.get("password"));
+            //usersService.updateUser(curUser, allRequestParams.get("password"));
+            usersService.updateUser(curUser, hashedPassword);
             redirectAttributes.addFlashAttribute("resultMessage", "updateSuccessfull");
 
+            logger.debug("User "+curUser+" has been registered");
 
             if (auth.getAuthorities().toString().equalsIgnoreCase("[ROLE_TUTOR]")){
                 return "redirect:/tutor/";

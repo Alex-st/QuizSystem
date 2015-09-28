@@ -26,6 +26,12 @@
   <fmt:message key="hello"/> ${user.name}<br>
   <br>
 
+  <center>
+    <c:if test="${not empty resultMessage}">
+      <fmt:message key="${resultMessage}"/>
+    </c:if>
+  </center>
+
   <form action='addquestion' method="post">
 
     <table>
@@ -45,7 +51,7 @@
       <tr>
         <td><fmt:message key="inputQuestion"/></td>
         <td>
-          <textarea cols="23" rows="5" name="qtext"></textarea>
+          <textarea cols="23" rows="5" name="qtext">${curQuestion.text}</textarea>
           <%--<input type='text' name='qtext' value=''/>--%>
         </td>
         <td></td>
@@ -55,22 +61,22 @@
       </tr>
       <tr>
         <td><fmt:message key="inputCorrectAnswer"/></td>
-        <td><input type='text' name='q1' value=''/></td>
+        <td><input type='text' name='q1' value='${q1.text}'/></td>
         <td><input type="checkbox" name="correctAnswer1" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
         <td><fmt:message key="inputSecondAnswer"/></td>
-        <td><input type='text' name='q2' value=''/></td>
+        <td><input type='text' name='q2' value='${q2.text}'/></td>
         <td><input type="checkbox" name="correctAnswer2" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
         <td><fmt:message key="inputThirdAnswer"/></td>
-        <td><input type='text' name='q3' value=''/></td>
+        <td><input type='text' name='q3' value='${q3.text}'/></td>
         <td><input type="checkbox" name="correctAnswer3" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
         <td><fmt:message key="inputFourthAnswer"/></td>
-        <td><input type='text' name='q4' value=''/></td>
+        <td><input type='text' name='q4' value='${q4.text}'/></td>
         <td><input type="checkbox" name="correctAnswer4" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
@@ -83,27 +89,6 @@
            name="${_csrf.parameterName}"
            value="${_csrf.token}"/>
 
-    <%--<select name="qtopic">--%>
-      <%--<c:forEach var="topic" items="${topics}">--%>
-        <%--<option value="${topic.topicName}" name="opt">${topic.topicName}</option>--%>
-      <%--</c:forEach>--%>
-    <%--</select><br>--%>
-
-    <%--<fmt:message key="inputQuestion"/>--%>
-    <%--<input type='text' name='qtext' value=''/><br>--%>
-    <%--<fmt:message key="inputCorrectAnswer"/>--%>
-    <%--<input type='text' name='correctanswer' value=''/><br>--%>
-    <%--<fmt:message key="inputSecondAnswer"/>--%>
-    <%--<input type="text" name='q2' value=''/><br>--%>
-    <%--<fmt:message key="inputThirdAnswer"/>--%>
-    <%--<input type='text' name='q3' value=''/><br>--%>
-    <%--<fmt:message key="inputFourthAnswer"/>--%>
-    <%--<input type='text' name='q4' value=''/><br>--%>
-    <%--<fmt:message key="inputFifthAnswer"/>--%>
-    <%--<input type='text' name='q5' value=''/><br>--%>
-
-    <%--<button type = "reset" name="Reset" value="reset"><fmt:message key="reset"/></button>--%>
-    <%--<button type="submit" name="send" value="newquestion"><fmt:message key="addQuestion"/></button>--%>
   </form>
 
 

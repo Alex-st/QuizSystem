@@ -2,6 +2,8 @@ package web;
 
 import dao.domain.*;
 import dao.repository.ResultsRepo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,9 @@ public class StudentsController {
 
     @Autowired
     QuestionsService questionsService;
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(StudentsController.class);
 
     private LangEnum getCurrentLanguage(HttpServletRequest request) {
 
@@ -88,6 +93,9 @@ public class StudentsController {
         Map<String, Integer> answers = nextQuestion(0, initialQuestions, model, request);
         model.addAttribute("answers", answers);
 
+        logger.debug("User "+((Users)request.getSession().getAttribute("user")).getLogin()+" started test "+
+                ((Topics)(Topics) request.getSession().getAttribute("testtopic")).getTopicName(), "admin");
+
         return "exam";
     }
 
@@ -99,7 +107,6 @@ public class StudentsController {
 
         List<Questions> qList = (List<Questions>)request.getSession().getAttribute("questionsList");
         int curQuestion = (int) request.getSession().getAttribute("curQuestion");
-
 
         //---------------checking if button "next" was pushed----------------
         if (isSend.equals("next")) {
@@ -148,6 +155,10 @@ public class StudentsController {
 
             //resultsService.createNewResult(testResult);
             resultsService.createNewResultWithDeletingPrevious(testResult);
+
+            logger.debug("User "+((Users)request.getSession().getAttribute("user")).getLogin()+" finished test "+
+                    ((Topics)(Topics) request.getSession().getAttribute("testtopic")).getTopicName()
+                    +" with result "+testMark, "admin");
 
             request.getSession().removeAttribute("testtopic");
             request.getSession().removeAttribute("testmark");
