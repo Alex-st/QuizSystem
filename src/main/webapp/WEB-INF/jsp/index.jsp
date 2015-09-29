@@ -29,7 +29,7 @@
     <form name="loginForm" method="post" action="login" role="form">
 
         <fieldset class="scheduler-border">
-            <legend><fmt:message key="inputYourData"/></legend>
+            <legend><fmt:message key="greatingIndexMessage"/></legend>
     <div class="control-group form-group">
             <select name="locale">
             <option value="en" name="opt">English</option>

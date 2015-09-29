@@ -95,7 +95,7 @@ public class TutorController {
         System.out.println(curQuestion.getText());
         redirectAttributes.addFlashAttribute("curQuestion", curQuestion);
 
-        if (allRequestParams.get("q1") != null) {
+        if (allRequestParams.get("q1").length() > 0) {
             Answers answer1 = new Answers();
             answer1.setText(allRequestParams.get("q1"));
             answer1.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer1")));
@@ -105,7 +105,7 @@ public class TutorController {
             redirectAttributes.addFlashAttribute("q1", answer1);
         }
 
-        if (allRequestParams.get("q2") != null) {
+        if (allRequestParams.get("q2").length() > 0) {
             Answers answer2 = new Answers();
             answer2.setText(allRequestParams.get("q2"));
             answer2.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer2")));
@@ -115,7 +115,7 @@ public class TutorController {
             redirectAttributes.addFlashAttribute("q2", answer2);
         }
 
-        if (allRequestParams.get("q3") != null) {
+        if (allRequestParams.get("q3").length() > 0) {
             Answers answer3 = new Answers();
             answer3.setText(allRequestParams.get("q3"));
             answer3.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer3")));
@@ -125,7 +125,7 @@ public class TutorController {
             redirectAttributes.addFlashAttribute("q3", answer3);
         }
 
-        if (allRequestParams.get("q4") != null) {
+        if (allRequestParams.get("q4").length() > 0) {
             Answers answer4 = new Answers();
             answer4.setText(allRequestParams.get("q4"));
             answer4.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer4")));

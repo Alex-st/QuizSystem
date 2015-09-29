@@ -44,7 +44,7 @@
 
     <table>
       <tr>
-        <td colspan="3" align="center"><fmt:message key="writeQuestion"/></td>
+        <td colspan="3" align="center"><h4><fmt:message key="writeQuestion"/></h4></td>
       </tr>
       <tr>
         <td><fmt:message key="subject"/>
@@ -54,42 +54,52 @@
           </c:forEach>
         </select></td>
         <%--<td></td>--%>
-        <td colspan="2"><input type="checkbox" name="isMultiChoice" value="true"><fmt:message key="isQuestionMulty"/></td>
+        <td colspan="2">
+          <div class="control-group form-group">
+            <input type="checkbox" name="isMultiChoice" value="true">
+            <fmt:message key="isQuestionMulty"/>
+            </div>
+        </td>
       </tr>
       <tr>
         <td><fmt:message key="inputQuestion"/></td>
         <td>
+
           <textarea cols="23" rows="5" name="qtext">${curQuestion.text}</textarea>
           <%--<input type='text' name='qtext' value=''/>--%>
         </td>
         <td></td>
       </tr>
       <tr>
-        <td colspan="3" align="center"><fmt:message key="writeAnswer"/></td>
+        <td colspan="3" align="center"><h4><fmt:message key="writeAnswer"/></h4></td>
       </tr>
       <tr>
-        <td><fmt:message key="inputCorrectAnswer"/></td>
+        <td><div class="control-group form-group"><fmt:message key="inputCorrectAnswer"/></div></td>
         <td><input type='text' name='q1' value='${q1.text}'/></td>
-        <td><input type="checkbox" name="correctAnswer1" value="true"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type="checkbox" name="correctAnswer1" value="true">&nbsp;<fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
-        <td><fmt:message key="inputSecondAnswer"/></td>
+        <td><div class="control-group form-group"><fmt:message key="inputSecondAnswer"/></div></td>
         <td><input type='text' name='q2' value='${q2.text}'/></td>
-        <td><input type="checkbox" name="correctAnswer2" value="true"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type="checkbox" name="correctAnswer2" value="true">&nbsp;<fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
-        <td><fmt:message key="inputThirdAnswer"/></td>
+        <td><div class="control-group form-group"><fmt:message key="inputThirdAnswer"/></div></td>
         <td><input type='text' name='q3' value='${q3.text}'/></td>
-        <td><input type="checkbox" name="correctAnswer3" value="true"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type="checkbox" name="correctAnswer3" value="true">&nbsp;<fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
-        <td><fmt:message key="inputFourthAnswer"/></td>
+        <td><div class="control-group form-group"><fmt:message key="inputFourthAnswer"/></div></td>
         <td><input type='text' name='q4' value='${q4.text}'/></td>
-        <td><input type="checkbox" name="correctAnswer4" value="true"><fmt:message key="isAnswerCorrect"/></td>
+        <td><input type="checkbox" name="correctAnswer4" value="true">&nbsp;<fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
-        <td colspan="3" align="center"><button type = "reset" name="Reset" class="btn btn-default" value="reset"><fmt:message key="reset"/></button>
-        <button type="submit" name="send" class="btn btn-default" value="newquestion"><fmt:message key="addQuestion"/></button></td>
+        <td colspan="3" align="center">
+          <div class="control-group form-group">
+          <button type = "reset" name="Reset" class="btn btn-default" value="reset"><fmt:message key="reset"/></button>
+          <button type="submit" name="send" class="btn btn-default" value="newquestion"><fmt:message key="addQuestion"/></button>
+          </div>
+        </td>
       </tr>
     </table>
 

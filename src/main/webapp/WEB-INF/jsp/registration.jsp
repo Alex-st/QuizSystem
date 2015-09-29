@@ -31,14 +31,18 @@
 <div class="container">
   <div class="col-md-12">
     <br>
+
     <div id="header" align="center">
       <c:if test="${not empty user}">
         <fmt:message key="hello"/> ${user.name}<br>
       </c:if>
 
     <%--something additional--%>
-      <c:if test="${not empty resultMessage}">
-        <fmt:message key="${resultMessage}"/>
+      <c:if test="${not empty resultMessage}" >
+        <div class="alert alert-info">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <fmt:message key="${resultMessage}"/>
+        </div>
       </c:if>
     </div>
   <%----------------------------------------------%>
@@ -61,16 +65,16 @@
         <tr>
           <td>
             <div class="control-group form-group">
-          <label for="bname" class="uname" data-icon="*"><fmt:message key="name"/></label>
-              </div>
+              <label for="bname" class="uname" data-icon="*"><fmt:message key="name"/></label>
+            </div>
           </td>
           <td>
             <div class="control-group form-group">
-          <input id="bname" type='text' name='name' value='${user.name}'/>
-          <c:if test="${not empty errorMessages['nameError']}">
-              <font color="red"><fmt:message key="${errorMessages['nameError']}"/></font>
-          </c:if>
-              </div>
+              <input id="bname" type='text' name='name' value='${user.name}'/>
+              <c:if test="${not empty errorMessages['nameError']}">
+                  <font color="red"><fmt:message key="${errorMessages['nameError']}"/></font>
+              </c:if>
+            </div>
           </td>
         </tr>
         <tr>
@@ -143,7 +147,12 @@
              value="${_csrf.token}"/>
     </fieldset>
     </form>
+
+    <c:if test="${empty user}">
+    <a href="${pageContext.request.contextPath}/index"><fmt:message key="toIndex"/>
+      </c:if>
   </div>
+
 
 <sec:authorize access="isAuthenticated()">
     <c:import url="/WEB-INF/jsp/menu.jsp"></c:import>

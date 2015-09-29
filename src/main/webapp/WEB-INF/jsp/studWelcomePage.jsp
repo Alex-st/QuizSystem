@@ -43,15 +43,15 @@
       <h4><fmt:message key="yourResult"/></h4>
       <table class="table table-condensed">
         <tr>
-          <th><fmt:message key="date"/>&nbsp;</th>
+          <th><fmt:message key="date"/></th>
           <th><fmt:message key="subject"/></th>
-          <th>&nbsp;<fmt:message key="mark"/></th>
+          <th><fmt:message key="mark"/></th>
         </tr>
         <c:forEach var="entry" items="${studresults}">
           <tr>
-            <td>${entry.date}&nbsp;</td>
+            <td>${entry.date}</td>
             <td>${entry.topic.topicName}</td>
-            <td>&nbsp;${entry.mark}</td>
+            <td>${entry.mark}</td>
           </tr>
         </c:forEach>
       </table>
