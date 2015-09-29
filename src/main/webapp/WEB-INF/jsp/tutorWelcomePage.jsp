@@ -16,33 +16,43 @@
 
 <html>
 <head>
-    <title><fmt:message key="tutorTitle"/></title>
+  <title><fmt:message key="tutorTitle"/></title>
+  <link href="<c:url value="/resources/css/bootstrap.css" />" rel="stylesheet">
+  <link href="<c:url value="/resources/css/modern-business.css" />" rel="stylesheet">
+  <link href="<c:url value="/resources/font-awesome/css/font-awesome.min.css"/>" rel="stylesheet" type="text/css">
+  <script src="<c:url value="/resources/js/bootstrap.js" />"></script>
+  <script src="<c:url value="/resources/js/jquery.js" />"></script>
 </head>
 <body>
-<fmt:message key="hello"/> ${user.name}<br>
-
-<c:if test="${not empty resultMessage}" >
-  <fmt:message key="${resultMessage}"/><br>
-</c:if>
-
-<c:if test="${not empty questions}" >
-  <p><fmt:message key="listOfQuestion"/></p>
-  <table>
-    <tr>
-      <th><fmt:message key="subject"/></th>
-      <th><fmt:message key="question"/></th>
-    </tr>
-    <c:forEach var="entry" items="${questions}">
-      <tr>
-        <td>${entry.topic.topicName}</td>
-        <td>${entry.text}</td>
-      </tr>
-    </c:forEach>
-  </table>
-</c:if>
-
-
 <c:import url="/WEB-INF/jsp/menu.jsp"></c:import>
+<br>
+<div class="container" align="center">
+  <div class="col-md-12">
 
+    <fmt:message key="hello"/> ${user.name}<br>
+    <c:if test="${not empty resultMessage}" >
+      <div class="alert alert-info">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <fmt:message key="${resultMessage}"/>
+      </div>
+    </c:if>
+
+    <c:if test="${not empty questions}" >
+      <h4><fmt:message key="listOfQuestion"/></h4>
+      <table class="table">
+        <tr>
+          <th><fmt:message key="subject"/></th>
+          <th><fmt:message key="question"/></th>
+        </tr>
+        <c:forEach var="entry" items="${questions}">
+          <tr>
+            <td>${entry.topic.topicName}</td>
+            <td>${entry.text}</td>
+          </tr>
+        </c:forEach>
+      </table>
+    </c:if>
+  </div>
+</div>
 </body>
 </html>

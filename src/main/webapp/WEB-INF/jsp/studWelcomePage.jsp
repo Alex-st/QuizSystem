@@ -17,51 +17,65 @@
 <html>
 <head>
     <title><fmt:message key="studentTitle"/></title>
+  <link href="<c:url value="/resources/css/bootstrap.css" />" rel="stylesheet">
+  <link href="<c:url value="/resources/css/modern-business.css" />" rel="stylesheet">
+  <link href="<c:url value="/resources/font-awesome/css/font-awesome.min.css"/>" rel="stylesheet" type="text/css">
+  <script src="<c:url value="/resources/js/bootstrap.js" />"></script>
+  <script src="<c:url value="/resources/js/jquery.js" />"></script>
+  <script src="<c:url value="/resources/js/jqBootstrapValidation.js"/>"></script>
+
 </head>
 <body>
-<fmt:message key="hello"/> ${user.name}<br>
-<c:if test="${not empty resultMessage}" >
-  <fmt:message key="${resultMessage}"/><br>
-</c:if>
+<c:import url="/WEB-INF/jsp/menu.jsp"></c:import>
+<br>
+<div class="container" align="center">
+  <div class="col-md-12">
 
-<c:if test="${not empty studresults}" >
-  <table>
-    <tr>
-      <th><fmt:message key="subject"/></th>
-      <th><fmt:message key="mark"/></th>
-    </tr>
-    <c:forEach var="entry" items="${studresults}">
-      <tr>
-        <td>${entry.topic.topicName}</td>
-        <td>${entry.mark}</td>
-      </tr>
-    </c:forEach>
-  </table>
-</c:if>
+    <fmt:message key="hello"/> ${user.name}<br>
+    <c:if test="${not empty resultMessage}" >
+      <div class="alert alert-info">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <fmt:message key="${resultMessage}"/>${resultMark}
+      </div>
+    </c:if>
+
+    <c:if test="${not empty studresults}" >
+      <h4><fmt:message key="yourResult"/></h4>
+      <table class="table table-condensed">
+        <tr>
+          <th><fmt:message key="date"/>&nbsp;</th>
+          <th><fmt:message key="subject"/></th>
+          <th>&nbsp;<fmt:message key="mark"/></th>
+        </tr>
+        <c:forEach var="entry" items="${studresults}">
+          <tr>
+            <td>${entry.date}&nbsp;</td>
+            <td>${entry.topic.topicName}</td>
+            <td>&nbsp;${entry.mark}</td>
+          </tr>
+        </c:forEach>
+      </table>
+    </c:if>
 
 <br><br>
-<p><fmt:message key="passNewTest"/></p>
+<h4><fmt:message key="passNewTest"/></h4>
 
-<form method="get" action="examinit" >
-  <c:forEach var="topic" items="${topics}">
-    <button type="submit" name="test" value="${topic.topicId}" >${topic.topicName}
-    </button><br>
-  </c:forEach>
+    <form method="get" action="examinit" >
+      <ul class="nav nav-pills nav-stacked">
 
-  <input type="hidden"
-         name="${_csrf.parameterName}"
-         value="${_csrf.token}"/>
-</form>
+      <c:forEach var="topic" items="${topics}">
+        <li>
+          <button type="submit" class="btn btn-default" name="test" value="${topic.topicId}" >${topic.topicName}
+          </button>
+        </li>
+      </c:forEach>
 
-
-<c:import url="/WEB-INF/jsp/menu.jsp"></c:import>
-
-<c:url var="logoutUrl" value="/logout"/>
-<form action="${logoutUrl}" method="post">
-  <input type="submit" value="Log out" />
-  <input type="hidden"
-         name="${_csrf.parameterName}"
-         value="${_csrf.token}"/>
-</form>
+      </ul>
+      <input type="hidden"
+             name="${_csrf.parameterName}"
+             value="${_csrf.token}"/>
+    </form>
+    </div>
+  </div>
 </body>
 </html>

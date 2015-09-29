@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import service.QuestionsService;
 import service.ResultsService;
 import service.TopicsService;
@@ -103,7 +104,14 @@ public class StudentsController {
     public String examProcessing(HttpServletRequest request,
                                  @RequestParam("send") String isSend,
                                  @RequestParam(value ="answer", required=false) String[] answer,
+                                 RedirectAttributes redirectAttributes,
                                  Model model) {
+
+        //-------------check whether test was initiated correctly-------------
+        if (!request.getHeader("Referer").contains("examprocess") && !request.getHeader("Referer").contains("examinit")) {
+            model.addAttribute("resultMessage", "needRestartExam");
+            return "studWelcomePage";
+        }
 
         List<Questions> qList = (List<Questions>)request.getSession().getAttribute("questionsList");
         int curQuestion = (int) request.getSession().getAttribute("curQuestion");
@@ -166,13 +174,9 @@ public class StudentsController {
             request.getSession().removeAttribute("isMulti");
             request.getSession().removeAttribute("questionsList");
 
-            if (request.getSession().getAttribute("locale").equals("ru"))
-                model.addAttribute("resultMessage", "Результат вашего теста "+testMark);
-            else model.addAttribute("resultMessage", "Result of your attempt "+testMark);
-
-            model.addAttribute("topics", topicsService.getAllTopicsByLanguage(getCurrentLanguage(request)));
-
-            return "studWelcomePage";
+            redirectAttributes.addFlashAttribute("resultMessage", "resultNotification");
+            redirectAttributes.addFlashAttribute("resultMark", testMark);
+            return"redirect:/stud/";
         }
 
         //------------new question data loading----------------------------------------

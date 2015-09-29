@@ -27,6 +27,8 @@
               <property name="suffix" value=".jsp"/>
        </bean>
 
+        <mvc:resources mapping="/resources/**" location="/resources/FirstTemplate/" cache-period="31556926"/>
+
         <!--<bean id="resourceBundle" class="java.util.ResourceBundle" factory-method="getBundle">-->
             <!--<constructor-arg type="java.lang.String" value="text"/>-->
         <!--</bean>-->

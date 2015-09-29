@@ -17,20 +17,28 @@
 <head>
   <link rel="stylesheet" type="text/css" href="css/style.css" />
   <title><fmt:message key="questionTitle"/></title>
+  <link href="<c:url value="/resources/css/bootstrap.css" />" rel="stylesheet">
+  <link href="<c:url value="/resources/css/modern-business.css" />" rel="stylesheet">
+  <link href="<c:url value="/resources/font-awesome/css/font-awesome.min.css"/>" rel="stylesheet" type="text/css">
+  <script src="<c:url value="/resources/js/bootstrap.js" />"></script>
+  <script src="<c:url value="/resources/js/jquery.js" />"></script>
+  <script src="<c:url value="/resources/js/jqBootstrapValidation.js"/>"></script>
+
+
 </head>
 <body>
-<div id="wrapper">
+<c:import url="/WEB-INF/jsp/menu.jsp"></c:import>
+<br>
+<div class="container" align="center">
+  <div class="col-md-12">
 
-  <br>
-  ${locale}<br>
-  <fmt:message key="hello"/> ${user.name}<br>
-  <br>
-
-  <center>
-    <c:if test="${not empty resultMessage}">
-      <fmt:message key="${resultMessage}"/>
+    <fmt:message key="hello"/> ${user.name}<br>
+    <c:if test="${not empty resultMessage}" >
+      <div class="alert alert-info">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <fmt:message key="${resultMessage}"/>
+      </div>
     </c:if>
-  </center>
 
   <form action='addquestion' method="post">
 
@@ -80,8 +88,8 @@
         <td><input type="checkbox" name="correctAnswer4" value="true"><fmt:message key="isAnswerCorrect"/></td>
       </tr>
       <tr>
-        <td colspan="3" align="center"><button type = "reset" name="Reset" value="reset"><fmt:message key="reset"/></button>
-        <button type="submit" name="send" value="newquestion"><fmt:message key="addQuestion"/></button></td>
+        <td colspan="3" align="center"><button type = "reset" name="Reset" class="btn btn-default" value="reset"><fmt:message key="reset"/></button>
+        <button type="submit" name="send" class="btn btn-default" value="newquestion"><fmt:message key="addQuestion"/></button></td>
       </tr>
     </table>
 
@@ -92,9 +100,9 @@
   </form>
 
 
-  <c:import url="/WEB-INF/jsp/menu.jsp"></c:import>
-
 </div>
+</div>
+
 
 </body>
 </html>

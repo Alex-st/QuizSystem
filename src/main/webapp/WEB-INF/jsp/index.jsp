@@ -9,60 +9,70 @@
 <html>
 <head>
     <title><fmt:message key="title"/></title>
+    <link href="<c:url value="/resources/css/bootstrap.min.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/modern-business.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/font-awesome/css/font-awesome.min.css"/>" rel="stylesheet" type="text/css">
+    <script src="<c:url value="/resources/js/bootstrap.js" />"></script>
+    <script src="<c:url value="/resources/js/jquery.js" />"></script>
+    <script src="<c:url value="/resources/js/jqBootstrapValidation.js"/>"></script>
 </head>
 <body>
-<h2><fmt:message key="title"/></h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+        <h2><fmt:message key="title"/></h2>
 
-<c:if test="${not empty resultMessage}" >
-<fmt:message key="${resultMessage}"/><br>
-</c:if>
-<form name="loginForm" method="post" action="login">
+        <c:if test="${not empty resultMessage}" >
+            <fmt:message key="${resultMessage}"/><br>
+        </c:if>
 
-    <select name="locale">
-        <option value="en" name="opt">English</option>
-        <option value="ru" name="opt">Russian</option>
-    </select><br>
+    <form name="loginForm" method="post" action="login" role="form">
 
-    <p>
-            <label for="blogin"><fmt:message key="loginButton"/></label>
-            <input id="blogin" type='text' name='username' /><br>
-    </p>
-    <p>
-            <label for="password"><fmt:message key="passButton"/></label>
-            <input id="password" type='password' name='password' /><br>
-    </p>
-    <p>
-            <button type='submit' name='submit' value='submit'>
+        <fieldset class="scheduler-border">
+            <legend><fmt:message key="inputYourData"/></legend>
+    <div class="control-group form-group">
+            <select name="locale">
+            <option value="en" name="opt">English</option>
+            <option value="ru" name="opt">Russian</option>
+            </select>
+    </div>
+
+    <div class="control-group form-group">
+            <label for="blogin"><fmt:message key="loginButton"/></label><br>
+            <input id="blogin" type='text' name='username' required data-validation-required-message="Please enter your login" aria-describedby="sizing-addon1"/><br>
+    </div>
+    <div class="control-group form-group">
+            <label for="password"><fmt:message key="passButton"/></label><br>
+            <input id="password" type='password' name='password' required data-validation-required-message="Please enter your password"/><br>
+    </div>
+        <div id="success"></div>
+            <button type='submit' name='submit' value='submit' class="btn btn-default">
             <fmt:message key="authButton"/>
             </button>
-    </p>
 
     <input type="hidden"
            name="${_csrf.parameterName}"
            value="${_csrf.token}"/>
-
-    <p>
-        <button type="submit" name="submit" value="register" >
-        <fmt:message key="registrationButton"/>
-        </button>
-
-
-    </p>
-    <br>
+        </fieldset>
 
 </form>
 
+            <div class="control-group form-group">
+                <form action="register/" method="get">
+                    <input type="hidden"
+                           name="${_csrf.parameterName}"
+                           value="${_csrf.token}"/>
 
-<form action="register/" method="get">
-    <input type="hidden"
-           name="${_csrf.parameterName}"
-           value="${_csrf.token}"/>
+                    <input type="hidden"
+                           name="locale"
+                           value="ru"/>
+                    <button type = "submit" name="register" value="register" class="btn btn-link"><fmt:message key="pleaseRegister"/></button>
+                </form>
+            </div>
 
-    <input type="hidden"
-           name="locale"
-           value="ru"/>
-    <button type = "submit" name="register" value="register"><fmt:message key="toregister"/></button>
-</form>
+        </div>
+        </div>
+</div>
 
 
 <%--<p>--%>
