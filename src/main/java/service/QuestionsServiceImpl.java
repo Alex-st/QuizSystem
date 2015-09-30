@@ -106,21 +106,6 @@ public class QuestionsServiceImpl implements QuestionsService {
             System.out.println("QS: Correct answer:"+i.getText()+"/"+i.getAnswerId());
         }
 
-//        for (Answers i: receivedAnswers) {
-//
-//            System.out.println("QS: Received answer:"+i.getText()+"/"+i.getAnswerId());
-//            System.out.println(correctAnswers.contains(i));
-//
-//            if (correctAnswers.contains(i)) {
-//                mark += 1./correctAnswers.size();
-//
-//                System.out.println("QS:Mark for "+i.getAnswerId()+" is "+mark);
-//            }
-//            else {
-//                mark-= 1./correctAnswers.size();
-//                System.out.println("QS:Mark for "+i.getAnswerId()+" is "+mark);
-//            }
-//        }
 
         for (Answers ra: receivedAnswers) {
 

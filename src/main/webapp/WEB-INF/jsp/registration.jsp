@@ -148,9 +148,9 @@
     </fieldset>
     </form>
 
-    <c:if test="${empty user}">
+    <sec:authorize access="isAnonymous()">
     <a href="${pageContext.request.contextPath}/index"><fmt:message key="toIndex"/>
-      </c:if>
+      </sec:authorize>
   </div>
 
 

@@ -65,7 +65,7 @@
 
                     <input type="hidden"
                            name="locale"
-                           value="ru"/>
+                           value="en"/>
                     <button type = "submit" name="register" value="register" class="btn btn-link"><fmt:message key="pleaseRegister"/></button>
                 </form>
             </div>

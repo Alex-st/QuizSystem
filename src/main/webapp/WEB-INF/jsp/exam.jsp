@@ -71,6 +71,7 @@
                value="${_csrf.token}"/>
       </form>
       </div>
+    <a href="${pageContext.request.contextPath}/stud/"><fmt:message key="toIndex"/>
     </div>
   </div>
 </body>
