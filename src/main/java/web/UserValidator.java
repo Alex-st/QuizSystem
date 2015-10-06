@@ -12,6 +12,9 @@ import java.util.regex.Pattern;
 
 /**
  * Created by alex on 9/27/15.
+ * Custom validator class because user registration form
+ * has data for TWO entities (user and userCredentials) and so standard
+ * Spring validation couldn't be used in such a case
  */
 @Component
 public class UserValidator implements Validator {

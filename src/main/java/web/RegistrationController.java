@@ -47,43 +47,25 @@ public class RegistrationController {
 
         if (request.getSession().getAttribute("user") != null) {
             model.addAttribute("registerButton", "updateButton");
+            model.addAttribute("formName", "update");
         }
         else {
             model.addAttribute("registerButton", "registrationButton");
+            model.addAttribute("formName", "addnew");
         }
 
         return "registration";
     }
 
-    @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String registrationMethod(@RequestParam Map<String,String> allRequestParams,
-                                     HttpServletRequest request, Model model,
-                                     RedirectAttributes redirectAttributes,
-                                     Authentication auth) {
-        //----------parameter initialization--------------------------
-        boolean isNewUser = true;
-        Users curUser = new Users();
-        RoleEnum role = RoleEnum.ROLE_STUDENT;
+    private boolean isUserDataValid(Map<String,String> allRequestParams,
+                                    RedirectAttributes redirectAttributes,
+                                    boolean isUserNew,
+                                    Users curUser){
+
+        //Users curUser = new Users();
         UserValidator userValidator = new UserValidator();
-
-        if (request.getSession().getAttribute("user") != null) {
-            isNewUser = false;
-            curUser = (Users)request.getSession().getAttribute("user");
-            role = usersService.getUserCredentials(curUser).getRole();
-        }
-
-        userValidator.setIsUserNew(isNewUser);
         userValidator.setUsersService(usersService);
-
-        // if current existed user change his login to some other already presented in DB
-        if (!isNewUser && !curUser.getLogin().equals(allRequestParams.get("login"))
-                && (usersService.getAllLogins().contains(allRequestParams.get("login")))) {
-            redirectAttributes.addFlashAttribute("resultMessage", "loginexist");
-            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
-            return "redirect:/register/";
-        }
-
-        // ----------------creating new user with received data------------------------
+        userValidator.setIsUserNew(isUserNew);
 
         curUser.setName(allRequestParams.get("name"));
         curUser.setLogin(allRequestParams.get("login"));
@@ -111,10 +93,25 @@ public class RegistrationController {
             }
 
             redirectAttributes.addFlashAttribute("errorMessages", errorMessages);
+            return false;
+        }
+
+        return true;
+
+    }
+
+    @RequestMapping(value = "/addnew", method = RequestMethod.POST)
+    public String registrationNewUserMethod(@RequestParam Map<String,String> allRequestParams,
+                                            RedirectAttributes redirectAttributes) {
+
+        Users curUser = new Users();
+        RoleEnum role = RoleEnum.ROLE_STUDENT;
+
+        if (!isUserDataValid(allRequestParams, redirectAttributes, true, curUser)) {
             return "redirect:/register/";
         }
 
-        if (isNewUser && allRequestParams.get("select").equals("tutor")) {
+        if (allRequestParams.get("select").equals("tutor")) {
             role = RoleEnum.ROLE_TUTOR;
         }
 
@@ -127,27 +124,54 @@ public class RegistrationController {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPassword = passwordEncoder.encode(allRequestParams.get("password"));
 
-        if (isNewUser) {
-            //usersService.createUser(curUser, allRequestParams.get("password"), role);
-            usersService.createUser(curUser, hashedPassword, role);
-            redirectAttributes.addFlashAttribute("resultMessage", "registrationSuccessfull");
+        usersService.createUser(curUser, hashedPassword, role);
+        redirectAttributes.addFlashAttribute("resultMessage", "registrationSuccessfull");
 
-            logger.debug("User "+curUser+" has been registered");
-        } else {
-            //usersService.updateUser(curUser, allRequestParams.get("password"));
-            usersService.updateUser(curUser, hashedPassword);
-            redirectAttributes.addFlashAttribute("resultMessage", "updateSuccessfull");
+        logger.debug("User "+curUser+" has been registered");
 
-            logger.debug("User "+curUser+" has been registered");
+        return "redirect:/index";
+    }
 
-            if (auth.getAuthorities().toString().equalsIgnoreCase("[ROLE_TUTOR]")){
-                return "redirect:/tutor/";
-            };
-            if (auth.getAuthorities().toString().equalsIgnoreCase("[ROLE_STUDENT]")){
-                return "redirect:/stud/";
-            };
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public String registrationMethod(@RequestParam Map<String,String> allRequestParams,
+                                     HttpServletRequest request,
+                                     RedirectAttributes redirectAttributes,
+                                     Authentication auth) {
+        Users curUser = (Users)request.getSession().getAttribute("user");
 
+        // if current existed user change his login to some other already presented in DB
+        if (!curUser.getLogin().equals(allRequestParams.get("login"))
+                && (usersService.getAllLogins().contains(allRequestParams.get("login")))) {
+            redirectAttributes.addFlashAttribute("resultMessage", "loginexist");
+            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
+            return "redirect:/register/";
         }
+
+        // ----------------validation of received data------------------------
+        if (!isUserDataValid(allRequestParams, redirectAttributes, false, curUser)) {
+            return "redirect:/register/";
+        }
+
+        if (allRequestParams.get("password").length() < 6) {
+            redirectAttributes.addFlashAttribute("passwordError", "passisincorrect");
+            redirectAttributes.addFlashAttribute("registerButton", "registrationButton");
+            return "redirect:/register/";
+        }
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPassword = passwordEncoder.encode(allRequestParams.get("password"));
+
+        usersService.updateUser(curUser, hashedPassword);
+        redirectAttributes.addFlashAttribute("resultMessage", "updateSuccessfull");
+
+        logger.debug("User "+curUser+" has been updated");
+
+        if (auth.getAuthorities().toString().equalsIgnoreCase("[ROLE_TUTOR]")){
+            return "redirect:/tutor/";
+        };
+        if (auth.getAuthorities().toString().equalsIgnoreCase("[ROLE_STUDENT]")){
+            return "redirect:/stud/";
+        };
 
         return "redirect:/index";
     }

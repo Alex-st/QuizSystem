@@ -52,22 +52,6 @@ public class StudentsController {
         return curLang;
     }
 
-    //method prepares "curQuestion"
-    //and returns list of its answers
-    private Map<String, Integer> nextQuestion(int curQuestion, List<Questions> qList,
-                                              Model model, HttpServletRequest request) {
-
-        model.addAttribute("question", qList.get(curQuestion).getText());
-        request.getSession().setAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
-
-        Map<String, Integer> answers = new HashMap<>();
-        for (Answers i: qList.get(curQuestion).getAnswers()) {
-            answers.put(i.getText(), i.getAnswerId());
-        }
-        request.getSession().setAttribute("curQuestion", curQuestion);
-        return answers;
-    }
-
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String wellcomePage(HttpServletRequest request, Model model) {
 
@@ -154,37 +138,55 @@ public class StudentsController {
 
         //---------------processing finishing of test------------------------
         if(qList.size() == 0) {
-
-            Results testResult = new Results();
-            testResult.setDate(new Date());
-            testResult.setMark(testMark);
-            testResult.setTopic((Topics)request.getSession().getAttribute("testtopic"));
-            testResult.setStudent((Users)request.getSession().getAttribute("user"));
-
-            //resultsService.createNewResult(testResult);
-            resultsService.createNewResultWithDeletingPrevious(testResult);
-
-            logger.debug("User "+((Users)request.getSession().getAttribute("user")).getLogin()+" finished test "+
-                    ((Topics)(Topics) request.getSession().getAttribute("testtopic")).getTopicName()
-                    +" with result "+testMark, "admin");
-
-            request.getSession().removeAttribute("testtopic");
-            request.getSession().removeAttribute("testmark");
-            request.getSession().removeAttribute("curQuestion");
-            request.getSession().removeAttribute("isMulti");
-            request.getSession().removeAttribute("questionsList");
-
-            redirectAttributes.addFlashAttribute("resultMessage", "resultNotification");
-            redirectAttributes.addFlashAttribute("resultMark", testMark);
-            return"redirect:/stud/";
+            return finishTest(request, redirectAttributes, testMark);
         }
 
         //------------new question data loading----------------------------------------
-
         Map<String, Integer> answers = nextQuestion(curQuestion, qList, model, request);
         model.addAttribute("answers", answers);
 
         return "exam";
+    }
+
+    private String finishTest(HttpServletRequest request, RedirectAttributes redirectAttributes, double testMark) {
+        Results testResult = new Results();
+        testResult.setDate(new Date());
+        testResult.setMark(testMark);
+        testResult.setTopic((Topics)request.getSession().getAttribute("testtopic"));
+        testResult.setStudent((Users)request.getSession().getAttribute("user"));
+
+        //resultsService.createNewResult(testResult);
+        resultsService.createNewResultWithDeletingPrevious(testResult);
+
+        logger.debug("User "+((Users)request.getSession().getAttribute("user")).getLogin()+" finished test "+
+                ((Topics)(Topics) request.getSession().getAttribute("testtopic")).getTopicName()
+                +" with result "+testMark, "admin");
+
+        request.getSession().removeAttribute("testtopic");
+        request.getSession().removeAttribute("testmark");
+        request.getSession().removeAttribute("curQuestion");
+        request.getSession().removeAttribute("isMulti");
+        request.getSession().removeAttribute("questionsList");
+
+        redirectAttributes.addFlashAttribute("resultMessage", "resultNotification");
+        redirectAttributes.addFlashAttribute("resultMark", testMark);
+        return"redirect:/stud/";
+    }
+
+    //method prepares "curQuestion"
+    //and returns list of its answers
+    private Map<String, Integer> nextQuestion(int curQuestion, List<Questions> qList,
+                                              Model model, HttpServletRequest request) {
+
+        model.addAttribute("question", qList.get(curQuestion).getText());
+        request.getSession().setAttribute("isMulti", qList.get(curQuestion).isMultipleQuestions());
+
+        Map<String, Integer> answers = new HashMap<>();
+        for (Answers i: qList.get(curQuestion).getAnswers()) {
+            answers.put(i.getText(), i.getAnswerId());
+        }
+        request.getSession().setAttribute("curQuestion", curQuestion);
+        return answers;
     }
 
 }

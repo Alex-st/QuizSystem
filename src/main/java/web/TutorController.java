@@ -38,7 +38,6 @@ public class TutorController {
     private static final Logger logger =
             LoggerFactory.getLogger(StudentsController.class);
 
-//    @Secured("ROLE_TUTOR")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String wellcomePage(HttpServletRequest request, Model model) {
 
@@ -50,7 +49,6 @@ public class TutorController {
         return "tutorWelcomePage";
     }
 
-//    @Secured("ROLE_TUTOR")
     @RequestMapping(value = "/newQuestionForm", method = RequestMethod.GET)
     public String getQuestionForm(HttpServletRequest request, Model model) {
 
@@ -68,7 +66,6 @@ public class TutorController {
         return "newQuestion";
     }
 
-//    @Secured("ROLE_TUTOR")
     @RequestMapping(value = "/addquestion", method = RequestMethod.POST)
     public String createNewQuestion(@RequestParam Map<String,String> allRequestParams,
                                     HttpServletRequest request, Model model,
@@ -95,56 +92,53 @@ public class TutorController {
         System.out.println(curQuestion.getText());
         redirectAttributes.addFlashAttribute("curQuestion", curQuestion);
 
-        if (allRequestParams.get("q1").length() > 0) {
-            Answers answer1 = new Answers();
-            answer1.setText(allRequestParams.get("q1"));
-            answer1.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer1")));
-            answer1.setQuestion(curQuestion);
-            answers.add(answer1);
-
-            redirectAttributes.addFlashAttribute("q1", answer1);
+        //---------------Processing received answers -------------------------
+        for (int i = 1; i < 5; i++) {
+            if (allRequestParams.get("q"+i).length() > 0) {
+                proccesSingleAnswerInput(answers, allRequestParams, redirectAttributes, curQuestion, i);
+            }
         }
 
-        if (allRequestParams.get("q2").length() > 0) {
-            Answers answer2 = new Answers();
-            answer2.setText(allRequestParams.get("q2"));
-            answer2.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer2")));
-            answer2.setQuestion(curQuestion);
-            answers.add(answer2);
-
-            redirectAttributes.addFlashAttribute("q2", answer2);
+        // -----------------validation---------------------------------------
+        if (!isQuestionDataValid(curQuestion, redirectAttributes, answers)) {
+            return "redirect:/tutor/newQuestionForm";
         }
+        // ------------------End of validation ------------------------------
 
-        if (allRequestParams.get("q3").length() > 0) {
-            Answers answer3 = new Answers();
-            answer3.setText(allRequestParams.get("q3"));
-            answer3.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer3")));
-            answer3.setQuestion(curQuestion);
-            answers.add(answer3);
+        curQuestion.setAnswers(answers);
+        questionsService.addNewQuestion(curQuestion);
 
-            redirectAttributes.addFlashAttribute("q3", answer3);
-        }
+        logger.debug("User "+((Users)request.getSession().getAttribute("user")).getLogin()+" created question by"+
+                curQuestion.getTopic()+": "+curQuestion.getText());
 
-        if (allRequestParams.get("q4").length() > 0) {
-            Answers answer4 = new Answers();
-            answer4.setText(allRequestParams.get("q4"));
-            answer4.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer4")));
-            answer4.setQuestion(curQuestion);
-            answers.add(answer4);
+        redirectAttributes.addFlashAttribute("resultMessage", "questionAdded");
 
-            redirectAttributes.addFlashAttribute("q4", answer4);
-        }
+        return "redirect:/tutor/";
+    }
 
-        // -----------------validation-------------------
+    private void proccesSingleAnswerInput(Set<Answers> answers,
+                                           @RequestParam Map<String,String> allRequestParams,
+                                           RedirectAttributes redirectAttributes, Questions curQuestion,
+                                           int answerInputId) {
+        Answers answer = new Answers();
+        answer.setText(allRequestParams.get("q"+answerInputId));
+        answer.setIsCorrect(Boolean.valueOf(allRequestParams.get("correctAnswer"+answerInputId)));
+        answer.setQuestion(curQuestion);
+        answers.add(answer);
+
+        redirectAttributes.addFlashAttribute("q"+answerInputId, answer);
+    }
+
+    private boolean isQuestionDataValid(Questions curQuestion, RedirectAttributes redirectAttributes, Set<Answers> answers) {
 
         if (curQuestion.getText().length() == 0) {
             redirectAttributes.addFlashAttribute("resultMessage", "questionIncorrect");
-            return "redirect:/tutor/newQuestionForm";
+            return false;
         }
 
         if (answers.size() == 0) {
             redirectAttributes.addFlashAttribute("resultMessage", "evenOneAnswerNeeded");
-            return "redirect:/tutor/newQuestionForm";
+            return false;
         }
 
         int checkingNumberOfCorrectAnswers = 0;
@@ -156,24 +150,16 @@ public class TutorController {
 
         if (checkingNumberOfCorrectAnswers == 0) {
             redirectAttributes.addFlashAttribute("resultMessage", "evenOneCorrectAnswerNeeded");
-            return "redirect:/tutor/newQuestionForm";
+            return false;
         }
 
         if (!curQuestion.isMultipleQuestions() && (checkingNumberOfCorrectAnswers > 1)) {
 
             redirectAttributes.addFlashAttribute("resultMessage", "incorrectNumberOfCorrectAnswers");
-            return "redirect:/tutor/newQuestionForm";
+            return false;
         }
 
-        curQuestion.setAnswers(answers);
-        questionsService.addNewQuestion(curQuestion);
-
-        logger.debug("User "+((Users)request.getSession().getAttribute("user")).getLogin()+" created question by"+
-                curQuestion.getTopic()+": "+curQuestion.getText());
-
-        redirectAttributes.addFlashAttribute("resultMessage", "questionAdded");
-
-        return "redirect:/tutor/";
+        return true;
     }
 
 }

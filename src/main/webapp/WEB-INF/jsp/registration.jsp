@@ -49,7 +49,7 @@
 
   <div id="register" align="center">
     <br>
-    <form action="form" method="post">
+    <form action="${formName}" method="post">
     <fieldset>
       <legend><fmt:message key="inputYourData"/></legend>
       <sec:authorize access="isAnonymous()">
